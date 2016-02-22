@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 gem 'slim-rails'
 gem 'slim'
 
-
+gem 'roo'
 # bootstrap stuff
 gem 'bootstrap-sass', '~> 3.3.6'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'

@@ -4,4 +4,9 @@ class SalesController < ApplicationController
   	@products = IreadyProduct.all
   	@schools = School.all
   end
+
+  def distribution
+  end
+  
+
 end

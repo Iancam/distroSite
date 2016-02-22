@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
 
   get 'sales/iready'
-
+  get 'sales/distribution'
+  
   get 'welcome/index' => 'welcome#index'
   root 'welcome#index'
 

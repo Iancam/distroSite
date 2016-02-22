@@ -1,0 +1,42 @@
+div.col-1
+	= form_for :distribution do |f|
+		h3 Distribution Info
+		p
+			= f.label :contact
+			br/
+			= f.text_field :contact
+		p
+			= f.label :creation_Date 
+			br/
+			= f.date_field :creation_date 
+		p
+			= f.label :final_quote_id 
+			br/
+			= f.number_field :final_quote_id 
+		p
+			= f.label :po_number 
+			br/
+			= f.number_field :po_number 
+		h3 school
+		p
+			= f.label :state 
+			br
+			= f.text_field :state 
+		p
+			= f.label :district 
+			br
+			= f.text_field :district 
+		p
+			= f.label :name
+			br
+			= f.text_field :name
+		h3 product
+		p
+			= f.label :subject
+			br  
+			= select_tag(:subject, options_for_select([['Math', 1], ['Reading',2], ['Math and Reading', 3] ]))
+		p
+			= f.label :enrollment
+			br
+			= f.number_field :enrollment
+			
