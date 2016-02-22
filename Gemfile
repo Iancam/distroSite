@@ -1,6 +1,12 @@
 source 'https://rubygems.org'
 
+# slim
+gem 'slim-rails'
+gem 'slim'
 
+
+# bootstrap stuff
+gem 'bootstrap-sass', '~> 3.3.6'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.5.1'
 # Use postgresql as the database for Active Record

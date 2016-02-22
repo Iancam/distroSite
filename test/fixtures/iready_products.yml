@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  subject: MyString
+  tier: 
+  reo_id: 
+  isbn: MyString
+  sch_price: 
+  license_length: MyString
+  grade_range: MyString
+  product: MyString
+  license_type: MyString
+  prefix: MyString
+  suffix: MyString
+
+two:
+  subject: MyString
+  tier: 
+  reo_id: 
+  isbn: MyString
+  sch_price: 
+  license_length: MyString
+  grade_range: MyString
+  product: MyString
+  license_type: MyString
+  prefix: MyString
+  suffix: MyString

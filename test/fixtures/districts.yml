@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  pid: 
+  name: MyString
+  state: MyString
+
+two:
+  pid: 
+  name: MyString
+  state: MyString
