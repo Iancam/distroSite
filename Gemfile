@@ -1,9 +1,14 @@
 source 'https://rubygems.org'
 
+
+
 # slim
 gem 'slim-rails'
 gem 'slim'
 
+gem 'rails_12factor'
+
+# spreadsheet helper
 gem 'roo'
 # bootstrap stuff
 gem 'bootstrap-sass', '~> 3.3.6'

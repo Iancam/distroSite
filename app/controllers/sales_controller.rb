@@ -17,10 +17,14 @@ class SalesController < ApplicationController
     #TODO: 
   end
 
+  def distribution
+    @distribution = Distribution.new
+  end
+
+
   # create a distribution item
   def create
-
-  	@distribution = Distribution.new(params[:distribution])
+  	@distribution = Distribution.new
   	puts @distribution
   	# contact   = params[:contact]
   	# date      = params[:creation_date]
