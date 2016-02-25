@@ -1,1 +1,7 @@
-h1 Please use a valid url
+-if current_user
+  h3 current_user[:email]
+  /show current distribution table and new distribution
+  a href="sales/distribution" Create a new Distribution
+  
+- else 
+  /display login 

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+html
+  head
+    title distroSite
+    = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true 
+    = csrf_meta_tags
+
+
+body
+  .container
+    .navbar-collapse.collapse#navbar
+      .navbar-inner
+        ul.nav
+          - if current_user
+            li 
+              .btn.btn_primary 
+                = link_to "new Distribution", distributions_path
+            li
+              .btn.btn_primary 
+                a href="/sessions/destroy" log out
+            li
+              .btn.btn_primary 
+                a href="dashboard" all distributions
+          - else
+            li
+              .btn.btn_primary 
+              a href="/sessions/new" log in
+            li
+              .btn.btn_primary 
+              a href="/users/new" create usera href="log_out" log out
+
+  = yield 
+

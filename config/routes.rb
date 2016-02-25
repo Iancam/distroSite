@@ -1,12 +1,22 @@
 Rails.application.routes.draw do
 
-  get 'sales/iready'
-  get 'sales/distribution'
+  get 'users/new'
+    
+  get "log_in" => "sessions#new", :as => "log_in"
+  get "log_out" => "sessions#destroy", :as => "log_out"
+  get "sign_up" => "users#new", :as => "sign_up"
+
+  get 'sales/dashboard', :as => 'dashboard'
+  get 'sales/iready', :as => "iready"
+  get 'sales/distribution', :as =>'distribution'
   
   get 'welcome/index' => 'welcome#index'
   root 'welcome#index'
 
-  # root 'welcome/index'
+  resources :users
+  resources :sessions
+  resources :sales
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

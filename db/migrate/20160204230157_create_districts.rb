@@ -9,3 +9,4 @@ class CreateDistricts < ActiveRecord::Migration
     end
   end
 end
+

@@ -1,0 +1,13 @@
+a href="users/new" new user
+h2 Log In 
+= form_tag sessions_path do
+  table
+    tr
+      td = label_tag :email
+      td = text_field_tag :email, params[:email]
+    tr
+      td = label_tag :password
+      td = password_field_tag :password, params[:password]
+    tr
+      td.submit-button
+        = submit_tag "log in", :class => "btn btn-primary"
