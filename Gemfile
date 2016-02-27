@@ -8,6 +8,9 @@ gem 'simple_form'
 
 gem 'rails_12factor', group: :production
 
+ruby '2.2.4'
+
+
 # spreadsheet helper
 gem 'roo'
 # bootstrap stuff
