@@ -1,21 +1,22 @@
 Rails.application.routes.draw do
 
-  get 'users/new'
-    
-  get "log_in" => "sessions#new", :as => "log_in"
-  get "log_out" => "sessions#destroy", :as => "log_out"
-  get "sign_up" => "users#new", :as => "sign_up"
+  
 
-  get 'sales/dashboard', :as => 'dashboard'
-  get 'sales/iready', :as => "iready"
-  get 'sales/distribution', :as =>'distribution'
+  
+  get "log_in" => "sessions#new", :as => "log_in"
+  post "log_in" => "sessions#create"
+  delete "log_out" => "sessions#destroy", :as => "log_out"
+  get "sign_up" => "users#new", :as => "sign_up"
+  get 'distributions/create'
+  get "new_distribution" => "distributions#new", :as =>"new_distribution"
+  root :to => "sessions#new"
   
   get 'welcome/index' => 'welcome#index'
-  root 'welcome#index'
 
   resources :users
-  resources :sessions
-  resources :sales
+  # resources :sessions
+  resources :distributions
+  resources :districts
 
 
   # The priority is based upon order of creation: first created -> highest priority.

@@ -1,13 +1,11 @@
-a href="users/new" new user
-h2 Log In 
-= form_tag sessions_path do
-  table
-    tr
-      td = label_tag :email
-      td = text_field_tag :email, params[:email]
-    tr
-      td = label_tag :password
-      td = password_field_tag :password, params[:password]
-    tr
-      td.submit-button
-        = submit_tag "log in", :class => "btn btn-primary"
+
+- unless current_user
+	h2 Log In 
+	= form_tag controller: 'sessions', action: 'create', method: "post" do
+		= label_tag :email 
+		= email_field_tag :email
+		= label_tag :password 
+		= password_field_tag :password
+		= button_tag "submit" ,:class => "btn btn-primary"
+-else
+	h3 ="logged in as #{current_user['email']}"

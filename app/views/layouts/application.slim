@@ -14,21 +14,17 @@ body
         ul.nav
           - if current_user
             li 
-              .btn.btn_primary 
-                / = link_to "new Distribution", distributions_path
+              = current_user['email']
             li
-              .btn.btn_primary 
-                a href="/sessions/destroy" log out
+              = link_to "Log Out", {controller: 'sessions', action: 'destroy'}, :method => :delete
             li
-              .btn.btn_primary 
-                a href="dashboard" all distributions
+              =link_to 'new distribution', {controller: 'distributions', action: 'new'}
           - else
             li
-              .btn.btn_primary 
-              a href="/sessions/new" log in
+              = link_to 'Log In', log_in_path
             li
-              .btn.btn_primary 
-              a href="/users/new" create usera href="log_out" log out
+              a href="/users/new" New User
 
-  = yield 
+  .container
+    = yield
 

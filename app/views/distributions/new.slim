@@ -1,0 +1,37 @@
+
+
+
+= simple_form_for @distribution do |f|
+	.container-fluid
+		.col-sm-3
+		.col-sm-6
+			h3 District
+			= simple_fields_for @district do |d|
+				=d.input :state
+				=d.input :name
+			h3 Distribution
+			=f.input :contact_name
+			=f.input :street
+			=f.input :city
+			=f.input :state
+			=f.input :zip 
+			=f.input :creation_date
+			=f.input :final_quote_id
+			=f.input :po_number	
+
+	h3#orders orders
+	table.table
+		tr	
+			td
+				a href="#orders" id="_add_IReady_Order" Add IReady Group 
+			td
+				a href="#orders" id="_add_Ready_Order" Add Ready Group 
+			td
+				a href="#orders" id="_remove" method="_destroy" Remove Order
+	h3 School
+	= simple_fields_for :orders do |o|
+		=simple_fields_for :school do |s|
+			=s.input :name
+			=s.input :contact_name
+	=f.submit
+			

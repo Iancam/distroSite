@@ -1,12 +1,12 @@
 source 'https://rubygems.org'
 
-
-
 # slim
 gem 'slim-rails'
 gem 'slim'
 
-gem 'rails_12factor'
+gem 'simple_form'
+
+gem 'rails_12factor', group: :production
 
 # spreadsheet helper
 gem 'roo'

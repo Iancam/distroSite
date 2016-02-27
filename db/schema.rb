@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160224185603) do
+ActiveRecord::Schema.define(version: 20160226214347) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,19 +21,28 @@ ActiveRecord::Schema.define(version: 20160224185603) do
     t.datetime "creation_date"
     t.string   "final_quote_id"
     t.integer  "po_number"
-    t.integer  "address_id"
     t.integer  "district_id"
-    t.integer  "school_id"
-    t.integer  "teacher_grades_id"
-    t.integer  "student_grades_id"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.string   "street"
+    t.string   "city"
+    t.string   "state"
+    t.integer  "zip"
   end
 
   create_table "districts", force: :cascade do |t|
     t.integer  "pid"
     t.string   "name"
     t.string   "state"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "i_ready_orders", force: :cascade do |t|
+    t.string   "subject"
+    t.integer  "order_id"
+    t.boolean  "toolbox"
+    t.integer  "enrollment"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -52,6 +61,37 @@ ActiveRecord::Schema.define(version: 20160224185603) do
     t.string   "suffix"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.integer  "distribution_id"
+    t.string   "contact_name"
+    t.integer  "school_id"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  create_table "ready_orders", force: :cascade do |t|
+    t.string   "subject"
+    t.integer  "order_id"
+    t.integer  "grade_1_teacher"
+    t.integer  "grade_2_teacher"
+    t.integer  "grade_3_teacher"
+    t.integer  "grade_4_teacher"
+    t.integer  "grade_5_teacher"
+    t.integer  "grade_6_teacher"
+    t.integer  "grade_7_teacher"
+    t.integer  "grade_8_teacher"
+    t.integer  "grade_1_student"
+    t.integer  "grade_2_student"
+    t.integer  "grade_3_student"
+    t.integer  "grade_4_student"
+    t.integer  "grade_5_student"
+    t.integer  "grade_6_student"
+    t.integer  "grade_7_student"
+    t.integer  "grade_8_student"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
   end
 
   create_table "schools", force: :cascade do |t|
