@@ -1,5 +1,12 @@
 / _IReady_Order.slim
-= simple_fields_for :i_ready_orders do |i|
-	=i.input "subject" as: :string   
-	=i.input "toolbox" as: :boolean 
-	=i.input "enrollment"
+
+#iready_order style='display: none'
+	div.iready_order
+		h3 IReady Group	
+		= simple_fields_for :i_ready_orders do |i|
+			=i.input "subject", as: :string   
+			=i.input "toolbox", as: :boolean 
+			=i.input "enrollment"
+		br/
+		a href="#orders" id="_remove" method="_destroy" Remove Order
+		br/

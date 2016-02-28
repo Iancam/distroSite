@@ -10,28 +10,24 @@
 				=d.input :state
 				=d.input :name
 			h3 Distribution
+			/optional
 			=f.input :contact_name
 			=f.input :street
 			=f.input :city
 			=f.input :state
 			=f.input :zip 
+			/end optional
 			=f.input :creation_date
 			=f.input :final_quote_id
 			=f.input :po_number	
 
-	h3#orders orders
-	table.table
-		tr	
-			td
-				a href="#orders" id="_add_IReady_Order" Add IReady Group 
-			td
-				a href="#orders" id="_add_Ready_Order" Add Ready Group 
-			td
-				a href="#orders" id="_remove" method="_destroy" Remove Order
-	h3 School
-	= simple_fields_for :orders do |o|
-		=simple_fields_for :school do |s|
-			=s.input :name
-			=s.input :contact_name
-	=f.submit
+			h3#orders Orders
+			a href="#orders" id='_add_order' Add Order
+			br/
+			=f.submit
+	
+
+	=render partial: 'order'
+	=render partial: 'iready_order'
+	=render partial: 'ready_order'
 			

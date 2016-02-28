@@ -1,0 +1,20 @@
+/ _order.slim
+#order style="display: none"
+	div.order
+		h4 School
+		= simple_fields_for :orders do |o|
+			=simple_fields_for :school do |s|
+				=s.input :name
+				=s.input :contact_name
+		
+		h3#groups Groups
+		table.table
+		tr	
+			td
+				a href="#orders" id="_add_IReady_Order" Add IReady Group 
+			td
+				a href="#orders" id="_add_Ready_Order" Add Ready Group 
+		br/
+
+		a href="#orders" id="_remove" method="_destroy" Remove Order
+		br/

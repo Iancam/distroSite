@@ -16,3 +16,4 @@
 //= require_tree .
 //= require jquery
 //= require bootstrap-sprockets
+$('#_remove').click(function(){console.log('clicked')})
