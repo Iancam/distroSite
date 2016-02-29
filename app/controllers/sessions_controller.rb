@@ -13,7 +13,7 @@ class SessionsController < ApplicationController
 
 
 	def create
-		user = User.authenticate(params[:email], params[:password])
+		user = User.authenticate(params[:username], params[:password])
 
 	    if user
 	      session[:user] = user
@@ -21,7 +21,7 @@ class SessionsController < ApplicationController
 	    else
 	      # session[:user] = nil
 	      reset_session
-	      flash.now.alert = "Invalid email or password"
+	      flash.now.alert = "Invalid username or password"
 	      render "new"
 	    end
 	end

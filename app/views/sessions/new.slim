@@ -2,8 +2,8 @@
 - unless current_user
 	h2 Log In 
 	= form_tag controller: 'sessions', action: 'create', method: "post" do
-		= label_tag :email 
-		= email_field_tag :email
+		= label_tag :username
+		= email_field_tag :username
 		= label_tag :password 
 		= password_field_tag :password
 		= button_tag "submit" ,:class => "btn btn-primary"
