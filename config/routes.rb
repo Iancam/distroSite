@@ -10,8 +10,7 @@ Rails.application.routes.draw do
   get 'distributions/create'
   get "new_distribution" => "distributions#new", :as =>"new_distribution"
   root :to => "sessions#new"
-  
-  get 'welcome/index' => 'welcome#index'
+
 
   resources :users
   # resources :sessions
