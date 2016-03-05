@@ -2,19 +2,22 @@
 #order style="display: none"
 	div.order
 		h4 School
-		= simple_fields_for :orders do |o|
-			=simple_fields_for :school do |s|
-				=s.input :name
-				=s.input :contact_name
-		
+		=fields_for :school do |s|
+			.form-group
+				=s.label :School_Name 
+				=s.text_field :name, class: 'form-control', required: true
+			.form-group
+				=s.label :Contact 
+				=s.text_field :contact,	 class: 'form-control', required: true
+			
 		h3#groups Groups
 		table.table
 		tr	
 			td
-				a href="#orders" id="_add_IReady_Order" Add IReady Group 
+				a href="#end_user" id="_add_IReady_Order" Add IReady Group 
 			td
-				a href="#orders" id="_add_Ready_Order" Add Ready Group 
+				a href="#end_user" id="_add_Ready_Order" Add Ready Group 
 		br/
 
-		a href="#orders" id="_remove" method="_destroy" Remove Order
+		a href="#end_user" id="_remove" method="_destroy" Remove End User
 		br/

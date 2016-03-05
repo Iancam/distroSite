@@ -1,32 +1,16 @@
+.container-fluid
+.col-sm-2
+.col-sm-5
+	h3 District
 
+	= form_tag "/distributions/district_id", id:"district_form", remote: true do
+		= render partial: 'state_selector'
+		.form-group.ui-widget.ui-front
+			= label_tag :name
+			= text_field_tag :name,"", id:'district_auto', class: 'form-control', required: true 
+			= submit_tag "Choose District", class: "form-control btn-primary"
 
-
-= simple_form_for @distribution do |f|
-	.container-fluid
-		.col-sm-3
-		.col-sm-6
-			h3 District
-			= simple_fields_for @district do |d|
-				=d.input :state
-				=d.input :name
-			h3 Distribution
-			/optional
-			=f.input :contact_name
-			=f.input :street
-			=f.input :city
-			=f.input :state
-			=f.input :zip 
-			/end optional
-			=f.input :creation_date
-			=f.input :final_quote_id
-			=f.input :po_number	
-
-			h3#orders Orders
-			a href="#orders" id='_add_order' Add Order
-			br/
-			=f.submit
-	
-
+	=render partial: 'distribution_form'
 	=render partial: 'order'
 	=render partial: 'iready_order'
 	=render partial: 'ready_order'

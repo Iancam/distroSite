@@ -1,0 +1,19 @@
+h4 distributions
+table.table.table-striped
+	thead
+		tr
+			th creation_date
+			th final_quote_id
+			th po_number
+			th district_id
+	tbody		
+		= @distributions.each do |distro|
+			tr
+				td 
+					= distro.creation_date
+				td 
+					= distro.final_quote_id
+				td 
+					= distro.po_number
+				td 
+					= distro.district_id

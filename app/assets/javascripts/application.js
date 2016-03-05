@@ -14,6 +14,6 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require_tree .
-//= require jquery
 //= require bootstrap-sprockets
-$('#_remove').click(function(){console.log('clicked')})
+//= require jquery-ui/autocomplete
+//= require jquery-ui/datepicker

@@ -1,0 +1,38 @@
+#distribution style="display: none"
+	= form_for @distribution, :html=> { class: 'form-compact' } do |f|
+		/optional
+		/ a.btn.btn-primary#add_address href="#" Add Address
+		.form-group#address
+			h3 Distribution address
+			p leave blank if not applicable
+			.form-group
+				=f.label :contact_name 
+				=f.text_field :contact_name, class: 'form-control', required: false
+			.form-group
+				=f.label :street 
+				=f.text_field :street, class: 'form-control', required: false
+			.form-group
+				=f.label :city 
+				=f.text_field :city, class: 'form-control', required: false
+			= render "state_selector"	
+			.form-group
+				=f.label :zip 
+				=f.text_field :zip, class: 'form-control', required: false 
+		/end optional
+		.form_group#info
+			h3 Distribution Info
+			.form-group
+				=f.label :creation_date 
+				=f.text_field :creation_date, class: 'form-control', required: true
+			.form-group
+				=f.label 'Final Quote ID' 
+				=f.text_field :final_quote_id, class: 'form-control', required: true
+			.form-group
+				=f.label :po_number 
+				=f.text_field :po_number,	 class: 'form-control', required: true
+
+		h3#orders End User
+		a href="#end_user" id='_add_order' Add End User
+		br
+		=f.submit
+
