@@ -1,0 +1,25 @@
+/ display summary of end_users along with distro information
+table.table.table-striped
+	thead
+		tr
+			th Creation Date
+			td 
+				= distribution.creation_date
+		tr
+			th Final Quote Id
+			td 
+				= distribution.final_quote_id
+		tr
+			th PO Number
+			td 
+				= distribution.po_number
+		tr
+			th District Name
+			td 
+				= distribution.district.nil? ? 'error: no district' : distribution.district.name
+		tr
+			th District State
+			td 
+				= distribution.district.nil? ? 'error: no district' : distribution.district.state
+		
+		

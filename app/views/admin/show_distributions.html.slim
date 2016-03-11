@@ -1,13 +1,16 @@
-h4 distributions
+h4 Distributions
+
 table.table.table-striped
 	thead
 		tr
-			th creation_date
-			th final_quote_id
-			th po_number
-			th district_id
+			th Creation Date
+			th Final Quote Id
+			th PO Number
+			th District Name
+			th District State
+			th Download Link
 	tbody		
-		= @distributions.each do |distro|
+		- @distributions.each do |distro|
 			tr
 				td 
 					= distro.creation_date
@@ -16,4 +19,8 @@ table.table.table-striped
 				td 
 					= distro.po_number
 				td 
-					= distro.district_id
+					= distro.district.nil? ? 'error: no district' : distro.district.name
+				td
+					= distro.district.nil? ? 'error: no district' : distro.district.state
+				td
+					= link_to "CSV", distribution_path(format: 'csv', id: distro.id)

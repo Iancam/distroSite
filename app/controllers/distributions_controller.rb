@@ -2,15 +2,23 @@ class DistributionsController < ApplicationController
 
   def create
   	@distribution = Distribution.new(params[:distribution])
-    @state = @district.state
-  	# district = District.where("name = ? AND state = ?", @name, @state)
-    # distribution.district_id = district.pid
+    @distribution.user_id = current_user["id"]
+    @distribution.district_id = params['district']['id']
     if @distribution.save
-      redirect_to new_distribution_url, notice: 'successfully created distribution'
+      redirect_to '/distributions/index', notice: 'successfully created distribution'
 		else
-      redirect_to new_distribution_url, notice: 'failed to create a distribution'
+      redirect_to '/distributions/index', notice: 'failed to create a distribution'
 		end
 
+  end
+
+  def school_id
+    respond_to do |format|
+      district_id = params[:district]
+      school_name =   params[:school]
+      school_id = School.where(district_id: district_id, name: school_name).pluck(:pid)
+      format.json {render json: school_id}
+    end
   end
 
   def district_id
@@ -22,6 +30,26 @@ class DistributionsController < ApplicationController
       format.json {render json: [district_id, schools]}
       # format.html {}
     end
+  end
+
+  def index
+    user_id = current_user['id']
+    @distributions = Distribution.where(user_id: user_id)
+    
+  end
+  
+  def show
+    id = params['id']
+    distribution = Distribution.find(id)
+    respond_to do |format|
+      format.csv {send_data distribution.to_csv}
+      # format.html{send_data distribution.to_csv}
+      # format.json{send_data distribution.to_csv}
+    end
+  end
+
+  def edit
+    
   end
 
 

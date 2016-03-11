@@ -1,14 +1,13 @@
 / _order.slim
 #order style="display: none"
 	div.order
-		h4 School
 		=fields_for :school do |s|
 			.form-group
-				=s.label :School_Name 
-				=s.text_field :name, class: 'form-control', required: true
+				=render partial: "school_selector"
 			.form-group
 				=s.label :Contact 
-				=s.text_field :contact,	 class: 'form-control', required: true
+				=s.text_field :contact,	 class: 'form-control', required: false
+			
 			
 		h3#groups Groups
 		table.table

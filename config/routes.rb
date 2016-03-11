@@ -9,11 +9,14 @@ Rails.application.routes.draw do
   post "log_in" => "sessions#create"
   delete "log_out" => "sessions#destroy", :as => "log_out"
   get "sign_up" => "users#new", :as => "sign_up"
+  
+  get 'distributions/index'
+  get 'distributions/edit'
   get 'distributions/create'
   post 'distributions/districts'
   post 'distributions/district_id'
-  get "new_distribution" => "distributions#new", :as =>"new_distribution"
-  root :to => "sessions#new"
+  # get "new_distribution" => "distributions#new", :as =>"new_distribution"
+  root :to => "distributions#index"
 
 
   resources :users

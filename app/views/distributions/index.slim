@@ -1,0 +1,41 @@
+h2 Your Distributions
+h3
+- if flash[:notice]
+  .notice
+  	= flash[:notice]
+end
+
+table.table.table-striped
+	thead
+		tr
+			th user id    
+			th Creation Date   
+			th Final Quote Id    
+			th PO Number   
+			th District Name  
+			th District State 
+			th end users
+			th add new end user 
+			th edit   
+			th show detail  
+		tbody		
+			- @distributions.each do |distro|
+				tr
+					td
+					 = distro.user_id
+					td 
+						= distro.creation_date
+					td 
+						= distro.final_quote_id
+					td 
+						= distro.po_number
+					td 
+						= distro.district.nil? ? 'error: no district' : distro.district.name
+					td
+						= distro.district.nil? ? 'error: no district' : distro.district.state
+					td
+						a href="#add_end_user" add end user
+					td
+						a href="#edit" edit
+					td
+						a href="#show" show detail

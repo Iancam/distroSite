@@ -1,8 +1,8 @@
 class Distribution < ActiveRecord::Base
 	attr_accessible :street, :city, :state, 
 					:contact_name, :creation_date, 
-					:quote_id, :po_number, 
-					:orders_attributes, 
+					:final_quote_id, :po_number, 
+					:orders_attributes, :zip,
 					:districts_attributes
 	
 	has_many :orders
@@ -10,12 +10,35 @@ class Distribution < ActiveRecord::Base
 	belongs_to :user
 	accepts_nested_attributes_for :orders, :reject_if => lambda { |a| a[:content].blank? }, :allow_destroy => true
 
-	def self.toCSV
+	def to_csv
 		dist_csv_string = CSV.generate do |csv|
-			column_names.each do |c|
-				csv << ['','','',c, self.attributes.value_at(c)]
+			#do the distribution header
+			Distribution.column_names.each do |c|
+				csv << ['',c, self.attributes[c]]
 			end
-		end		
-	end
 
+			if @orders
+				# column names for orders, school and ReadyOrders
+				csv << Order.column_names + School.column_names+ ReadyOrders.column_names 
+				@orders.each do |order|
+					order = order.to_hashmap
+					order[:ready].each do |ready|
+						csv << order[:order] + ready
+					end
+				end
+				csv << ""
+				csv << ""
+			# header row including order, school and iready column names
+				csv << Order.column_names + School.column_names+ IReadyOrders.column_names
+				@orders.each do |order|
+					order = order.to_hashmap
+					order[:iready].each do |iready|
+						csv << order[:order] + iready
+					end
+				end
+			end
+		end
+		return dist_csv_string		
+	end
 end
+
