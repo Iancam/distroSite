@@ -17,7 +17,9 @@ body
           li.nav-item
             = link_to "Log Out", {controller: 'sessions', action: 'destroy'}, :method => :delete, :class=>'nav-link'
           li.nav-item
-            =link_to 'new distribution', {controller: 'distributions', action: 'new'}, :class=>'nav-link'
+            =link_to 'New Distribution', {controller: 'distributions', action: 'new'}, :class=>'nav-link'
+          li.nav-item
+            = link_to "See Distributions", {controller: 'distributions', action: 'index'}, :class=>'nav-link'
         - else
           li.nav-item.pull-xs-right
             = link_to 'Log In', log_in_path

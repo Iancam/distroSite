@@ -1,7 +1,8 @@
 #distribution style="display: none"
-	= form_for @distribution, :html=> { class: 'form-compact' } do |f|
+	= form_for @distribution do |f|
 		/optional
 		/ a.btn.btn-primary#add_address href="#" Add Address
+		
 		.form-group#address
 			h3 Distribution address
 			p leave blank if not applicable
@@ -30,9 +31,9 @@
 			.form-group
 				=f.label :po_number 
 				=f.text_field :po_number,	 class: 'form-control', required: true
-
+		=f.submit
 		h3#orders End User
 		a href="#end_user" id='_add_order' Add End User
 		br
-		=f.submit
+		
 
