@@ -5,33 +5,74 @@
 
 ready = ->
   $ ->
+    #MARK: index
+    $('#distribution_creation_date').datepicker();
 
+    #MARK: distribution modal
+    #get district data from server, use in district auto complete
+    $('#state').change ->
+      text = $.trim($('#state').val())
+      $.ajax({
+        type: "POST",
+        url: "/distributions/districts"
+        data: {state:{name: text}}
+        dataType: "json"
+        success: (data) ->
+          a_data =
+            source: data
+            minLength: 2
 
+          $('#district_auto').autocomplete(a_data)
+          return true
+        error: (data) ->
+          return true
+        })
 
-    # school_autocomplete = (data) ->
-    #   a_data = 
-    #     source: data
-    #     minLength: 2
-    #   $('#school_name').autocomplete(a_data)
+    #add school information to end_user_modal
+    $(".end_user").click ->
+      #get the data from the link
+      schools = $(this).data('schools')
+      $('.school').empty()
+      #use the data to render the schools selector
+      for arr in schools
+        id = arr[0] 
+        name = arr[1] 
+        $('.school').append("<option value='#{id}'>#{name}</option>")
+      
+      #use data to add hidden field with distribution id
+      distribution_id = $(this).data('distribution')
+      $("#distribution_id").val(distribution_id)
 
+    #submit new ready user
+    $("#submit_ready").click ->
+      console.log "registered submit_iready"
+      $("#new_ready").submit()
+    #submit new Iready user
+    $("#submit_iready").click ->
+      console.log "registered submit_iready"
+      $("#new_iready").submit()
 
-    substringMatcher = (id, strs) ->
-      return (q, cb) ->
-        matches = []
-        substrRegex = new RegExp(q, 'i')
-        $.each strs, (i, str) ->
-          if (substrRegex.test(str)) 
-            matches.push str
-        cb(id, matches)
-    
-    # updateList = (id, matches) ->
-    #   if $(identifier).val().length > 2
-    #     #add an autocomplete list
-    #     $(id).after('<ul id="res"></ul>')
+    #add district_id to distribution form
+    $("#district_auto").focusout( ->
+      data = $('#district_form').serializeArray();
+      $.ajax({
+        type: "POST"
+        url: "/distributions/district_id"
+        data: data
+        success: ->
+          #add district id to distribution form
+          $('#address').before("<input type='hidden' id='district_id' name='district[id]' value='#{data[0]}'/>")
 
-    #   # if list has been drawn, update results
-    #   # if list not drawn, draw matches
+        error: ->
+          console.log "failure"
+      }))
 
+    # process the creation of a new distribution
+    $("#submit_distribution").click ->
+      $("#new_distribution").submit();
+      
+
+    #MARK: distribution form 
     registerRemoveOnClick = () ->
       $('#_remove').click ()->
         $(this).parent().remove()
@@ -53,24 +94,6 @@ ready = ->
         addReadyOrder()
         registerRemoveOnClick()
 
-    # $('#school').change ->
-    #   text = $.trim($('#school').val())
-    #   $.ajax({
-    #     type: "POST",
-    #     url: "/distributions/school_id"
-    #     data: {state:{name: text}}
-    #     dataType: "json"
-    #     success: (data) ->
-    #       a_data =
-    #         source: data
-    #         minLength: 2
-
-    #       $('#district_auto').autocomplete(a_data)
-    #       return true
-    #     error: (data) ->
-    #       return true
-    #     })
-
     $(document).ajaxSuccess (event, jqXHR, ajaxOptions, data) ->
       if ajaxOptions.url.endsWith("district_id")
         console.log data
@@ -79,28 +102,11 @@ ready = ->
           distribution_form = $('#distribution').html() 
           $('#district_form').after(distribution_form)
           $('#address').before("<input type='hidden' id='district_id' name='district[id]' value='#{data[0]}'/>")
-          $('#distribution_creation_date').datepicker();
           addOrder(data[1])
         else
           $("#district_id").val(data[0])
 
-    $('#state').change ->
-      text = $.trim($('#state').val())
-      $.ajax({
-        type: "POST",
-        url: "/distributions/districts"
-        data: {state:{name: text}}
-        dataType: "json"
-        success: (data) ->
-          a_data =
-            source: data
-            minLength: 2
-
-          $('#district_auto').autocomplete(a_data)
-          return true
-        error: (data) ->
-          return true
-        })
+    
 
     addIreadyOrder = () ->
       $('#_add_IReady_Order').click (link) ->

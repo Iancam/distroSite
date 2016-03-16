@@ -1,0 +1,13 @@
+.modal.fade#ireadyModal tabindex="-1" role="dialog" aria-labelledby="ireadyModal"
+  .modal-dialog role="document"
+    .modal-content
+      .modal-header
+        button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          span aria-hidden="true" &times;
+        h4.modal-title#ireadyModal Add IReady User
+      .modal-body
+        = render "iready_order"
+      .modal-footer
+        button.btn.btn-default type="button" data-dismiss="modal" Close
+        button.btn.btn-primary.save_changes#submit_iready type="button" name="commit" value="Create iready" save
+        / <input type="submit" name="commit" value="Create Distribution">

@@ -1,18 +1,21 @@
 / _IReady_Order.slim
 
-#iready_order style='display: none'
-	div.iready_order
+
+=form_tag "/end_users/add_order", id: "new_iready"
+	= render 'order'
+	.iready_order
 		h3 IReady Group	
 		= fields_for :i_ready_orders do |i|
 			.form_group
 				=i.label "subject"
-				=i.text_field "subject", as: :string, class: 'form-control' 
+				=i.select "subject", nil, {}, {class: 'form-control'}
+					option value="math" math
+					option value="reading" reading
+					option value="math & reading" math & reading
+
 			.form_group
 				=i.label "toolbox"
 				=i.check_box "toolbox", as: :boolean , class: 'form-control'
 			.form_group
 				=i.label "enrollment"
 				=i.number_field "enrollment", class: 'form-control'
-		br/
-		a href="#orders" id="_remove" method="_destroy" Remove Group
-		br/

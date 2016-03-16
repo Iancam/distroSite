@@ -1,53 +1,46 @@
 / _add_Ready_Order.slim
-#ready_order style='display: none'
-	div.ready_order
-		h4 Ready Group
-		.container
-			= simple_fields_for :ready_orders do |r|
-				=r.input "subject"
-				.table
-					tr
-						td
-							=r.input  "grade_1_teacher"
-						td
-						    =r.input  "grade_1_student"
-					tr
-						td
-							=r.input  "grade_2_teacher"
-						td
-							=r.input  "grade_2_student"
-					tr
-						td
-							=r.input  "grade_3_teacher"
-						td
-							=r.input  "grade_3_student"
-					tr
-						td
-							=r.input  "grade_4_teacher"
-						td
-							=r.input  "grade_4_student"
-					tr
-						td
-							=r.input  "grade_5_teacher"
-						td
-						    =r.input  "grade_5_student"
-					tr
-						td
-							=r.input  "grade_6_teacher"
-						td
-							=r.input  "grade_6_student"
-					tr
-						td
-							=r.input  "grade_7_teacher"
-						td
-							=r.input  "grade_7_student"
-					tr
-						td
-							=r.input  "grade_8_teacher"
-						td
-							=r.input  "grade_8_student"
-				.tr
-								
-		br/
-		a href="#orders" id="_remove" method="_destroy" Remove Ready Group
-		br/
+=form_tag "/end_users/add_order", id: "new_ready", remote: true
+	= render "order"
+	h4 Ready Group
+	= fields_for :ready_order do |r|
+
+		=r.select "subject", nil, {}, {class: "form-control"}
+			option value="math" math
+			option value="reading" reading
+			option value="writing" writing
+			option value="math & reading" math & reading
+			option value="reading & writing" reading & writing
+			option value="writing & math" writing & math
+			option value="writing & math & reading" writing & math & reading
+		=r.label "grade 1 teacher"	
+		=r.number_field  "grade_1_teacher"	
+		=r.label "grade 1 student"
+		=r.number_field  "grade_1_student"
+		=r.label "grade 2 teacher"
+		=r.number_field  "grade_2_teacher"
+		=r.label "grade 2 student"
+		=r.number_field  "grade_2_student"
+		=r.label "grade 3 teacher"
+		=r.number_field  "grade_3_teacher"
+		=r.label "grade 3 student"
+		=r.number_field  "grade_3_student"
+		=r.label "grade 4 teacher"
+		=r.number_field  "grade_4_teacher"
+		=r.label "grade 4 student"
+		=r.number_field  "grade_4_student"
+		=r.label "grade 5 teacher"
+		=r.number_field  "grade_5_teacher"
+		=r.label "grade 5 student"
+		=r.number_field  "grade_5_student"
+		=r.label "grade 6 teacher"
+		=r.number_field  "grade_6_teacher"
+		=r.label "grade 6 student"
+		=r.number_field  "grade_6_student"
+		=r.label "grade 7 teacher"
+		=r.number_field  "grade_7_teacher"
+		=r.label "grade 7 student"
+		=r.number_field  "grade_7_student"
+		=r.label "grade 8 teacher"
+		=r.number_field  "grade_8_teacher"
+		=r.label "grade 8 student"
+		=r.number_field  "grade_8_student"

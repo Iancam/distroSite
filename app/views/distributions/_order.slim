@@ -1,22 +1,14 @@
 / _order.slim
-#order style="display: none"
-	div.order
-		=fields_for :school do |s|
-			.form-group
-				=render partial: "school_selector"
-			.form-group
-				=s.label :Contact 
-				=s.text_field :contact,	 class: 'form-control', required: false
-			
-			
-		h3#groups Groups
-		table.table
-		tr	
-			td
-				a href="#end_user" id="_add_IReady_Order" Add IReady Group 
-			td
-				a href="#end_user" id="_add_Ready_Order" Add Ready Group 
-		br/
+/ #order style="display: none"
 
-		a href="#end_user" id="_remove" method="_destroy" Remove End User
-		br/
+= fields_for :order
+	= hidden_field(:distribution, :id)
+	.form-group
+		label.col-sm-2 for="School" School Name
+		.col-sm-10
+	    select.form-control.school name="school"
+	      option value=""   N/A
+	.form-group
+		=label_tag :Contact 
+		=text_field_tag :contact_name,"",	 class: 'form-control', required: false
+	

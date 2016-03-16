@@ -1,0 +1,25 @@
+tr
+	td
+		= distro.user_id
+	td 
+		= distro.creation_date
+	td 
+		= distro.final_quote_id
+	td 
+		= distro.po_number
+	td 
+		= distro.district.nil? ? 'Error: No district' : distro.district.name
+	td
+		= distro.district.nil? ? 'Error: No district' : distro.district.state
+	td
+		= distro.orders.count
+	td
+		button.btn.btn-primary.end_user.iready type="button"  data-toggle="modal" data-target="#ireadyModal" data-schools=@schoolMap[distro.district_id] data-distribution=distro.id
+				add IReady user
+	td	
+		button.btn.btn-primary.end_user.ready type="button"  data-toggle="modal" data-target="#readyModal" data-schools=@schoolMap[distro.district_id] data-distribution=distro.id
+				add Ready user
+	/ td
+		/ a href="#edit" edit
+	td
+		= link_to "show detail", distribution_path(distro)

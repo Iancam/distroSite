@@ -32,18 +32,44 @@ class DistributionsController < ApplicationController
     end
   end
 
+  def add_order
+    # save order
+    order = Order.new()
+    order.distribution_id = params["distribution"]["id"]
+    order.contact_name = params[:contact]
+    order.school_id    = params[:school]
+
+    respond_to do |format|
+      #return nothing for json
+      if order.save()
+        format.json { render :json => ["success"]}
+      else
+        format.json { render :json => ["failed to save"]}
+      end
+    end
+  end
+
   def index
-    user_id = current_user['id']
-    @distributions = Distribution.where(user_id: user_id)
-    
+    if not current_user
+      redirect_to log_in_path
+    else
+      user_id = current_user['id']
+      @distributions = Distribution.where(user_id: user_id)
+      @distribution = Distribution.new
+      @schoolMap = {}
+      @distributions.each do |d|
+        schools = School.where(district_id: d.district_id)
+        @schoolMap[d.district_id]= schools.collect { |e| [e.pid, e.name] }
+      end
+    end
   end
   
   def show
     id = params['id']
-    distribution = Distribution.find(id)
+    @distribution = Distribution.find(id)
     respond_to do |format|
-      format.csv {send_data distribution.to_csv}
-      # format.html{send_data distribution.to_csv}
+      format.csv {send_data @distribution.to_csv}
+      format.html
       # format.json{send_data distribution.to_csv}
     end
   end

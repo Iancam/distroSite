@@ -1,0 +1,13 @@
+.modal.fade#readyModal tabindex="-1" role="dialog" aria-labelledby="readyModal"
+  .modal-dialog role="document"
+    .modal-content
+      .modal-header
+        button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          span aria-hidden="true" &times;
+        h4.modal-title#readyModal Add Ready User
+      .modal-body
+        = render "ready_order"
+      .modal-footer
+        button.btn.btn-default type="button" data-dismiss="modal" Close
+        button.btn.btn-primary.save_changes#submit_ready type="button" name="commit" value="Create ready" save
+        / <input type="submit" name="commit" value="Create Distribution">

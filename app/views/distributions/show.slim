@@ -1,25 +1,41 @@
 / display summary of end_users along with distro information
 table.table.table-striped
+	tr
+		th Creation Date
+		td 
+			= @distribution.creation_date
+	tr
+		th Final Quote Id
+		td 
+			= @distribution.final_quote_id
+	tr
+		th PO Number
+		td 
+			= @distribution.po_number
+	tr
+		th District Name
+		td 
+			= @distribution.district.nil? ? 'error: no district' : @distribution.district.name
+	tr
+		th District State
+		td 
+			= @distribution.district.nil? ? 'error: no district' : @distribution.district.state
+
+h2 End Users
+table.table.table-striped
 	thead
-		tr
-			th Creation Date
-			td 
-				= distribution.creation_date
-		tr
-			th Final Quote Id
-			td 
-				= distribution.final_quote_id
-		tr
-			th PO Number
-			td 
-				= distribution.po_number
-		tr
-			th District Name
-			td 
-				= distribution.district.nil? ? 'error: no district' : distribution.district.name
-		tr
-			th District State
-			td 
-				= distribution.district.nil? ? 'error: no district' : distribution.district.state
-		
+		tr 
+			td Contact
+			td School
+			td Show More
+	tbody
+		- @distribution.orders.each do |d|
+			tr
+				td 
+					= d.contact_name
+				td
+				 	= d.school.name
+				td 
+					a href="#show_more" show more
+
 		

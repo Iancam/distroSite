@@ -1,39 +1,43 @@
-#distribution style="display: none"
-	= form_for @distribution do |f|
-		/optional
-		/ a.btn.btn-primary#add_address href="#" Add Address
-		
-		.form-group#address
-			h3 Distribution address
-			p leave blank if not applicable
-			.form-group
-				=f.label :contact_name 
-				=f.text_field :contact_name, class: 'form-control', required: false
-			.form-group
-				=f.label :street 
-				=f.text_field :street, class: 'form-control', required: false
-			.form-group
-				=f.label :city 
-				=f.text_field :city, class: 'form-control', required: false
+/ #distribution style="display: none"
+= form_tag "/distributions/district_id", id:"district_form" do
+	= render partial: 'state_selector'
+	.form-group.ui-widget.ui-front
+		= label_tag :name
+		= text_field_tag :name,"", id:'district_auto', class: 'form-control', required: true 
+
+= form_for @distribution do |f|
+	/optional
+	/ a.btn.btn-primary#add_address href="#" Add Address
+	
+	.form-group#address
+		h3 Distribution address
+		p leave blank if not applicable
+		.form-group
+			=f.label :contact_name 
+			=f.text_field :contact_name, class: 'form-control', required: false
+		.form-group
+			=f.label :street 
+			=f.text_field :street, class: 'form-control', required: false
+		.form-group.col-sm-4
+			=f.label :city 
+			=f.text_field :city, class: 'form-control', required: false
+		.col-sm-4
 			= render "state_selector"	
-			.form-group
-				=f.label :zip 
-				=f.text_field :zip, class: 'form-control', required: false 
-		/end optional
-		.form_group#info
-			h3 Distribution Info
-			.form-group
-				=f.label :creation_date 
-				=f.text_field :creation_date, class: 'form-control', required: true
-			.form-group
-				=f.label 'Final Quote ID' 
-				=f.text_field :final_quote_id, class: 'form-control', required: true
-			.form-group
-				=f.label :po_number 
-				=f.text_field :po_number,	 class: 'form-control', required: true
-		=f.submit
-		h3#orders End User
-		a href="#end_user" id='_add_order' Add End User
-		br
+		.form-group.col-sm-3
+			=f.label :zip 
+			=f.text_field :zip, class: 'form-control', required: false 
+	/end optional
+	.form_group#info
+		h3 Distribution Info
+		.form-group
+			=f.label :creation_date 
+			=f.text_field :creation_date, class: 'form-control', required: true
+		.form-group
+			=f.label 'Final Quote ID' 
+			=f.text_field :final_quote_id, class: 'form-control', required: true
+		.form-group
+			=f.label :po_number 
+			=f.text_field :po_number,	 class: 'form-control', required: true
+
 		
 
