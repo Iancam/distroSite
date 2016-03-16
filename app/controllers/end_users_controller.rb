@@ -44,9 +44,9 @@ class EndUsersController < ApplicationController
 			end
 		end
 		if order_save and order_type_save
-			redirect_to "distributions/index", notice: "saved end_user"
+			redirect_to "/distributions/index", notice: "saved end_user"
 		else 
-			redirect_to "distributions/index", notice: "failed to save end user" 
+			redirect_to "/distributions/index", notice: "failed to save end user" 
 		end
 	end
 end

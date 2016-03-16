@@ -1,7 +1,7 @@
 require 'roo'
 namespace :roo do
 	desc "import xlsx data"
-	task :import_districts => :environment do
+	task :import_districts  => :environment do
 		data = Roo::Spreadsheet.open('db/distroData.xlsx')
 		districts = data.sheet(1)
 		dist_header = [:state,:name, :pid]
