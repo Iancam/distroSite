@@ -1,7 +1,7 @@
 require 'roo'
 namespace :roo do
 	desc "import xlsx data"
-	task :import_data => :environment do
+	task :import_all => :environment do
 		data = Roo::Spreadsheet.open('db/distroData.xlsx')
 		# puts data.info
 		products = data.sheet(0)
