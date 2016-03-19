@@ -1,7 +1,7 @@
 / _add_Ready_Order.slim
-=form_tag "/end_users/add_order", id: "new_ready", remote: true
+=form_tag "/end_users/add_order", id: "new_ready"
 	= render "order"
-	h4 Ready Group
+	h3 Ready Group
 	= fields_for :ready_order do |r|
 
 		=r.select "subject", nil, {}, {class: "form-control"}

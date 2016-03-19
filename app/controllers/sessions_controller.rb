@@ -17,7 +17,7 @@ class SessionsController < ApplicationController
 
 	    if user
 	      session[:user] = user
-	      redirect_to new_distribution_url, :notice => "Logged In"
+	      redirect_to distributions_url, :notice => "Logged In"
 	    else
 	      # session[:user] = nil
 	      reset_session

@@ -67,6 +67,7 @@ class DistributionsController < ApplicationController
   def show
     id = params['id']
     @distribution = Distribution.find(id)
+    @distribution.orders.build
     respond_to do |format|
       format.csv {send_data @distribution.to_csv}
       format.html

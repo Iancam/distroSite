@@ -41,11 +41,11 @@ ready = ->
       
       #use data to add hidden field with distribution id
       distribution_id = $(this).data('distribution')
-      $("#distribution_id").val(distribution_id)
+      $(".distribution_id").val(distribution_id)
 
     #submit new ready user
     $("#submit_ready").click ->
-      console.log "registered submit_iready"
+      console.log "registered submit_ready"
       $("#new_ready").submit()
     #submit new Iready user
     $("#submit_iready").click ->

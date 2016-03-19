@@ -17,20 +17,22 @@ class Distribution < ActiveRecord::Base
 				csv << ['',c, self.attributes[c]]
 			end
 
-			if @orders
+			csv << ['',"length", self.orders.length]
+
+			if self.orders
 				# column names for orders, school and ReadyOrders
-				csv << Order.column_names + School.column_names+ ReadyOrders.column_names 
-				@orders.each do |order|
+				csv << [""]+ Order.column_names + School.column_names+ ReadyOrder.column_names 				
+				self.orders.each do |order|
 					order = order.to_hashmap
 					order[:ready].each do |ready|
 						csv << order[:order] + ready
 					end
 				end
-				csv << ""
-				csv << ""
+				csv << [""]
+				csv << [""]
 			# header row including order, school and iready column names
-				csv << Order.column_names + School.column_names+ IReadyOrders.column_names
-				@orders.each do |order|
+				csv << [""]+ Order.column_names + School.column_names+ IReadyOrder.column_names
+				self.orders.each do |order|
 					order = order.to_hashmap
 					order[:iready].each do |iready|
 						csv << order[:order] + iready

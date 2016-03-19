@@ -38,7 +38,7 @@ class EndUsersController < ApplicationController
 			1.upto(8) { |n|
 			 	order_type["grade_#{n}_teacher"] = ready["grade_#{n}_teacher"]
 				order_type["grade_#{n}_student"] = ready["grade_#{n}_student"]
- 	 }
+ 	 		}
 			if order_type.save()
 				order_type_save = true
 			end

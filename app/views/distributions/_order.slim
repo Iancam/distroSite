@@ -2,7 +2,7 @@
 / #order style="display: none"
 
 = fields_for :order
-	= hidden_field(:distribution, :id)
+	= hidden_field(:distribution, :id, {class: "distribution_id"})
 	.form-group
 		label.col-sm-2 for="School" School Name
 		.col-sm-10

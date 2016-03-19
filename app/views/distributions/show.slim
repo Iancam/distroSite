@@ -1,4 +1,5 @@
 / display summary of end_users along with distro information
+H2 Distribution
 table.table.table-striped
 	tr
 		th Creation Date
@@ -22,20 +23,99 @@ table.table.table-striped
 			= @distribution.district.nil? ? 'error: no district' : @distribution.district.state
 
 h2 End Users
+h4 Iready Users
 table.table.table-striped
 	thead
 		tr 
 			td Contact
-			td School
-			td Show More
+			td School id
+			td subject
+			td order_id
+			td toolbox
+			td enrollment
 	tbody
-		- @distribution.orders.each do |d|
-			tr
-				td 
-					= d.contact_name
-				td
-				 	= d.school.name
-				td 
-					a href="#show_more" show more
-
-		
+		- @distribution.orders.each do |order|
+			- if order.i_ready_orders.length > 0
+				tr
+					td
+						=order.contact_name
+					td
+						=order.school_id
+					- order.i_ready_orders.each do |i|
+						td
+							=i.subject
+						td
+							=i.order_id
+						td
+							=i.toolbox
+						td
+							=i.enrollment
+h4 ready users
+table.table.table-striped
+	thead
+		tr 
+			td contact
+			td school id
+			td subject
+			td order id
+			td 1te
+			td 2te
+			td 3te
+			td 4te
+			td 5te
+			td 6te
+			td 7te
+			td 8te
+			td 1st
+			td 2st
+			td 3st
+			td 4st
+			td 5st
+			td 6st
+			td 7st
+			td 8st
+	tbody							
+		- @distribution.orders.each do |order|
+			- if order.ready_orders.length > 0
+				tr
+					td 
+						= order.contact_name
+					td
+						= order.school_id
+					- order.ready_orders.each do |r|
+						td
+							=r.subject
+						td
+							=r.order_id
+						td
+							=r.grade_1_teacher
+						td
+							=r.grade_2_teacher
+						td
+							=r.grade_3_teacher
+						td
+							=r.grade_4_teacher
+						td
+							=r.grade_5_teacher
+						td
+							=r.grade_6_teacher
+						td
+							=r.grade_7_teacher
+						td
+							=r.grade_8_teacher
+						td
+							=r.grade_1_student
+						td
+							=r.grade_2_student
+						td
+							=r.grade_3_student
+						td
+							=r.grade_4_student
+						td
+							=r.grade_5_student
+						td
+							=r.grade_6_student
+						td
+							=r.grade_7_student
+						td
+							=r.grade_8_student

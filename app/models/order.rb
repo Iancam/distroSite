@@ -12,15 +12,15 @@ class Order < ActiveRecord::Base
 	end
 
 	def to_hashmap
-		iready_arr = self.i_ready_orders.collect { |e| e.to_arr }
-		ready_arr  = self.ready_orders.collect { |e| e.to_arr }
+		iready_arr = self.i_ready_orders.collect { |e| e.to_array }
+		ready_arr  = self.ready_orders.collect { |e| e.to_array }
 		order      = self.attributes.values_at(*IReadyOrder.column_names)
-		school 	   = self.school.attributes.values_at(*School.column_names)
-		
+		school     = [""]*School.column_names.length
+		if self.school
+			school = self.school.attributes.values_at(*School.column_names)
+		end
 		{order: order + school,
 		       iready: iready_arr,
 		       ready: ready_arr}
-
-
 	end
 end

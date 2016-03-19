@@ -23,4 +23,6 @@ table.table.table-striped
 				td
 					= distro.district.nil? ? 'error: no district' : distro.district.state
 				td
+					= distro.orders.length
+				td
 					= link_to "CSV", distribution_path(format: 'csv', id: distro.id)
