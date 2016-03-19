@@ -18,8 +18,6 @@ body
             li.nav-item
               = link_to "Log Out", {controller: 'sessions', action: 'destroy'}, :method => :delete, :class=>'nav-link'
             li.nav-item
-              =link_to 'New Distribution', {controller: 'distributions', action: 'new'}, :class=>'nav-link'
-            li.nav-item
               = link_to "See Your Distributions", {controller: 'distributions', action: 'index'}, :class=>'nav-link'
             li.nav-item
               = link_to "See All Distributions", {controller: 'admin', action: 'show_distributions'}, :class=>'nav-link'
