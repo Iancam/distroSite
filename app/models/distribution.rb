@@ -10,6 +10,7 @@ class Distribution < ActiveRecord::Base
 	belongs_to :user
 	accepts_nested_attributes_for :orders, :reject_if => lambda { |a| a[:content].blank? }, :allow_destroy => true
 
+
 	def to_csv
 		dist_csv_string = CSV.generate do |csv|
 			#do the distribution header

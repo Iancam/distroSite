@@ -1,121 +1,151 @@
 / display summary of end_users along with distro information
-H2 Distribution
+h2 Distribution
 table.table.table-striped
-	tr
-		th Creation Date
-		td 
-			= @distribution.creation_date
-	tr
-		th Final Quote Id
-		td 
-			= @distribution.final_quote_id
-	tr
-		th PO Number
-		td 
-			= @distribution.po_number
-	tr
-		th District Name
-		td 
-			= @distribution.district.nil? ? 'error: no district' : @distribution.district.name
-	tr
-		th District State
-		td 
-			= @distribution.district.nil? ? 'error: no district' : @distribution.district.state
+  tr
+    th Creation Date
+    td 
+      = @distribution.creation_date
+  tr
+    th Final Quote Id
+    td 
+      = @distribution.final_quote_id
+  tr
+    th PO Number
+    td 
+      = @distribution.po_number
+  tr
+    th District Name
+    td 
+      = @distribution.district.nil? ? 'error: no district' : @distribution.district.name
+  tr
+    th District State
+    td 
+      = @distribution.district.nil? ? 'error: no district' : @distribution.district.state
 
 h2 End Users
-h4 Iready Users
-table.table.table-striped
-	thead
-		tr 
-			td Contact
-			td School id
-			td subject
-			td order_id
-			td toolbox
-			td enrollment
-	tbody
-		- @distribution.orders.each do |order|
-			- if order.i_ready_orders.length > 0
-				tr
-					td
-						=order.contact_name
-					td
-						=order.school_id
-					- order.i_ready_orders.each do |i|
-						td
-							=i.subject
-						td
-							=i.order_id
-						td
-							=i.toolbox
-						td
-							=i.enrollment
-h4 ready users
-table.table.table-striped
-	thead
-		tr 
-			td contact
-			td school id
-			td subject
-			td order id
-			td 1te
-			td 2te
-			td 3te
-			td 4te
-			td 5te
-			td 6te
-			td 7te
-			td 8te
-			td 1st
-			td 2st
-			td 3st
-			td 4st
-			td 5st
-			td 6st
-			td 7st
-			td 8st
-	tbody							
-		- @distribution.orders.each do |order|
-			- if order.ready_orders.length > 0
-				tr
-					td 
-						= order.contact_name
-					td
-						= order.school_id
-					- order.ready_orders.each do |r|
-						td
-							=r.subject
-						td
-							=r.order_id
-						td
-							=r.grade_1_teacher
-						td
-							=r.grade_2_teacher
-						td
-							=r.grade_3_teacher
-						td
-							=r.grade_4_teacher
-						td
-							=r.grade_5_teacher
-						td
-							=r.grade_6_teacher
-						td
-							=r.grade_7_teacher
-						td
-							=r.grade_8_teacher
-						td
-							=r.grade_1_student
-						td
-							=r.grade_2_student
-						td
-							=r.grade_3_student
-						td
-							=r.grade_4_student
-						td
-							=r.grade_5_student
-						td
-							=r.grade_6_student
-						td
-							=r.grade_7_student
-						td
-							=r.grade_8_student
+
+/ TODO: put a collapsible panel here
+.panel
+  .panel-heading
+    .panel-title
+      h4 IReady Users
+  .panel-body
+    table.table.table-striped
+      thead
+        tr 
+          td Contact
+          td School id
+          td subject
+          td order_id
+          td toolbox
+          td enrollment
+      tbody
+        - @distribution.orders.each do |order|
+          - if order.i_ready_orders.length > 0
+            tr
+              td
+                = order.contact_name
+              td
+                = order.school_id
+              - order.i_ready_orders.each do |i|
+                td
+                  =i.subject
+                td
+                  =i.order_id
+                td
+                  =i.toolbox
+                td
+                  =i.enrollment
+/ TODO: put a collapsible panel here
+.panel
+  .panel-heading
+    .panel-title
+      h4 Ready Users
+  .panel-body
+    table.table.table-striped
+      thead
+        tr 
+          td contact
+          td school id
+          td subject
+          td order id
+          td teacher products
+          td student products
+      tbody             
+        - @distribution.orders.each do |order|
+          - if order.ready_orders.length > 0
+            tr
+              td 
+                = order.contact_name
+              td
+                = order.school_id
+              - order.ready_orders.each do |r|
+                td
+                  = r.subject
+                td
+                  =r.order_id
+                / grade break down 
+                td
+                  /TODO add collapsible r.teacher_total
+                  = r.teacher_total
+                td
+                  /TODO add collapsible r.student_total
+                  = r.student_total
+                td 
+                  a href="#grades" data-toggle="collapse" aria-expanded="false" aria-controls="grades" unfold detail
+                tr 
+                  td colspan=7
+                    .collapse#grades.pull-right
+                      table.table
+                        thead
+                            tr
+                              td type
+                              td grade 1
+                              td grade 2
+                              td grade 3
+                              td grade 4
+                              td grade 5
+                              td grade 6
+                              td grade 7
+                              td grade 8
+                        / teacher
+                        / TODO: add a collapsible r.teacher_total
+                        tr
+                          td teacher
+                          td
+                            =r.grade_1_teacher
+                          td
+                            =r.grade_2_teacher
+                          td
+                            =r.grade_3_teacher
+                          td
+                            =r.grade_4_teacher
+                          td
+                            =r.grade_5_teacher
+                          td
+                            =r.grade_6_teacher
+                          td
+                            =r.grade_7_teacher
+                          td
+                            =r.grade_8_teacher
+                        /student
+                        / TODO: add a collapsible r.student_total
+                        tr
+                          td student
+                          td
+                            =r.grade_1_student
+                          td
+                            =r.grade_2_student
+                          td
+                            =r.grade_3_student
+                          td
+                            =r.grade_4_student
+                          td
+                            =r.grade_5_student
+                          td
+                            =r.grade_6_student
+                          td
+                            =r.grade_7_student
+                          td
+                            =r.grade_8_student
+                
