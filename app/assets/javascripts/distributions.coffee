@@ -1,11 +1,21 @@
 # Place all the behaviors and hooks related to the matching controller here.
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
-
+ReactDOM = require('react-dom');
+React  = require('react');
+DistributionModal = require('./components/distribution_form');
 
 ready = ->
   $ ->
+    
     #MARK: index
+    #MARK: React
+    #MARK: disribution form
+    ReactDOM.render(
+      <DistributionModal/>, 
+        document.getElementById('distributionForm')
+      )
+
     $('#distribution_creation_date').datepicker();
 
     #MARK: distribution modal

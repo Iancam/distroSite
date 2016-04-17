@@ -1,0 +1,33 @@
+{
+  "name": "distro-sit",
+  "version": "1.0.0",
+  "description": "sales distribution data webservice",
+  "main": "n\\a",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "n\\a"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Iancam/distroSite.git"
+  },
+  "author": "Ian Campbell",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Iancam/distroSite/issues"
+  },
+  "homepage": "https://github.com/Iancam/distroSite#readme",
+  "dependencies": {
+    "babel-preset-react": "^6.5.0",
+    "babelify": "^7.2.0",
+    "browserify": "^6.3.4",
+    "browserify-incremental": "^3.0.1",
+    "coffeeify": "~0.6",
+    "react": "^15.0.1",
+    "react-autosuggest": "^3.7.0",
+    "react-bootstrap": "^0.28.5",
+    "react-dom": "^15.0.1"
+  }
+}

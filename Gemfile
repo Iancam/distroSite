@@ -1,5 +1,11 @@
 source 'https://rubygems.org'
 
+#React
+# gem 'react-rails', '~> 1.6.0'
+# gem 'react-bootstrap-rails'
+gem 'sprockets-coffee-react'
+
+gem 'browserify-rails'
 # slim
 gem 'slim-rails'
 gem 'slim'
