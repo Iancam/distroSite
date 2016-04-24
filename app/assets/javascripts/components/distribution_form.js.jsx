@@ -4,7 +4,7 @@ var DatePicker = require("react-bootstrap-date-picker").default;
 var Input = ReactBootstrap.Input;
 var Button= ReactBootstrap.Button;
 var Modal = ReactBootstrap.Modal;
-
+var FormControl = ReactBootstrap.FormControl;
 
 var DistributionModal = React.createClass({
   getInitialState: function() {
@@ -78,7 +78,8 @@ var DistributionForm = React.createClass({
             zip: "",
             creation_date:(new Date()).toISOString(),
             final_quote_id:"",
-            po_number:""
+            po_number:"",
+            showAddress: false
           }
   },
   handleSubmit: function (e) {
@@ -162,7 +163,17 @@ var DistributionForm = React.createClass({
   handlePoNumberChange: function (e) {
     this.setState({po_number:e.target.value})
   },
+  handleAddressTypeChange: function (e) {
+    if (e.target.value == "central location"){
+      this.setState({showAddress:true})
+    } else {
+      this.setState({showAddress:false})
+    }
+    
+  },
   render: function() {
+    var addressStyle = this.state.showAddress? {} : {display: 'none'}
+    console.log(addressStyle)
     return (
     <form  
       ref="form"
@@ -180,10 +191,19 @@ var DistributionForm = React.createClass({
           onChange={this.handleDistrictChange} />
       </div>
       {/* address input */}
-      <div className="form-group" id="address">
+      <Input 
+        onChange={this.handleAddressTypeChange}
+        type="select"
+        label="Address Type" 
+        name="Address Type" 
+        >
+        <option value="individual schools">Individual Schools</option>
+        <option value="central location">Central Location</option>
+        
+      </Input>
+      <div className="form-group" id="address" style={addressStyle}>
         <h3>Distribution Address</h3> 
-        <p>leave blank if not applicable</p> 
-            <Input 
+        <Input 
           label="Contact Name"
           type="text"
           name="distribution[contact_name]"
