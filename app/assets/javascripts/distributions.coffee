@@ -12,7 +12,9 @@ ready = ->
     #MARK: React
     #MARK: disribution form
     ReactDOM.render(
-      <DistributionModal authenticity_token={$('meta[name=csrf-token]').attr('content')}/>, 
+      <DistributionModal 
+      url="/distributions"
+      authenticity_token={$('meta[name=csrf-token]').attr('content')}/>, 
         document.getElementById('distributionForm')
       )
 

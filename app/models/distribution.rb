@@ -3,8 +3,9 @@ class Distribution < ActiveRecord::Base
 					:contact_name, :creation_date, 
 					:final_quote_id, :po_number, 
 					:orders_attributes, :zip,
-					:districts_attributes
-	
+					:districts_attributes,
+					:district_id
+	validates :district_id, presence: true
 	has_many :orders
 	belongs_to :district
 	belongs_to :user

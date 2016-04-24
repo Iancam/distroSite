@@ -1,9 +1,7 @@
 var React = require("react");
 var ReactBootstrap = require("react-bootstrap");
 var DatePicker = require("react-bootstrap-date-picker").default;
-console.log(DatePicker)
 var Input = ReactBootstrap.Input;
-console.log(Input)
 var Button= ReactBootstrap.Button;
 var Modal = ReactBootstrap.Modal;
 
@@ -30,12 +28,15 @@ var DistributionModal = React.createClass({
       dataType: "json",
       data: distribution,
       success: function (data) {
-        // we don't expect any data
-      },
+        console.log("auto-refresh not implemented")
+        // this.props.handleNewDistribution(data)
+      }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString())
-      }
+      }.bind(this)
     })
+    this.close()
+    window.location.reload(true)
   },
   render: function() {
     return (
@@ -75,70 +76,66 @@ var DistributionForm = React.createClass({
             city: "",
             address_state: "",
             zip: "",
-            creation_date:"",
+            creation_date:(new Date()).toISOString(),
             final_quote_id:"",
             po_number:""
           }
   },
   handleSubmit: function (e) {
-    if (e) {e.preventDefault()}
-    var district_state = this.state.district_state.trim()
-    var district = this.state.district.trim()
-    var contact = this.state.contact.trim()
-    var street = this.state.street.trim()
-    var city = this.state.city.trim()
-    var state = this.state.address_state.trim()
-    var zip = this.state.zip.trim()
-    var creation_date = this.state.creation_date.trim()
-    var final_quote_id = this.state.final_quote_id.trim()
-    var po_number = this.state.po_number.trim()
-    
-    distribution = {
-      district_state: district_state,
-      district: district,
-      contact: contact,
-      street: street,
-      city: city,
-      state: state,
-      zip: zip,
-      creation_date: creation_date,
-      final_quote_id: final_quote_id,
-      po_number: po_number,
+    if (e) {e.preventDefault()}; 
+    var params = {
+      authenticity_token: this.props.authenticity_token,
+      district_state: this.state.district_state.trim(),
+      district_name: this.state.district.trim(),
+      distribution: {
+        contact_name: this.state.contact.trim(),
+        street: this.state.street.trim(),
+        city: this.state.city.trim(),
+        state: this.state.address_state.trim(),
+        zip: this.state.zip.trim(),
+        creation_date: this.state.creation_date.trim(),
+        final_quote_id: this.state.final_quote_id.trim(),
+        po_number: this.state.po_number.trim()
+      }
     }
-    if (!district_state ||
-        !district ||
-        !contact ||
-        !street ||
-        !city ||
-        !state ||
-        !zip ||
-        !creation_date ||
-        !final_quote_id ||
-        !po_number) { return; }
-    this.props.onDistributionSubmit(distribution)
+    console.log(params)
+    if (!params.authenticity_token || 
+        !params.district_state ||
+        !params.district_name ||      
+        !params.distribution.creation_date
+        ) { return; }
+
+    
+    
+    this.props.onDistributionSubmit(params)
     this.setState(this.getInitialState())
   },
+
   handleDistrictStateChange: function (e) {
-    this.setState({state:{name: e.target.value}})
+    this.setState({district_state: e.target.value})
+    var url = "/distributions/districts";
     $.ajax({
       type: "POST",
-      url: "/distributions/districts",
+      url: url,
       data: {state:{name: e.target.value}},
       dataType: "json",
       success: function (data) {
         this.setState({districts: data});
         return true
        }.bind(this),
-      error: function (data){
+      error: function (xhr, status, err){
+        console.log(url, status, err)
         return false
       }
     })
   },
-  handleDistrictChange: function (e) {
-    this.setState({district: e.target.value})
+
+  handleDistrictChange: function (district) {
+    this.setState({district: district})
+    
   },
   handleContactChange: function (e) {
-    this.setState({Contact: e.target.value})
+    this.setState({contact: e.target.value})
   },
 
   handleStreetChange: function (e) {
@@ -156,8 +153,8 @@ var DistributionForm = React.createClass({
   handleZipChange: function (e) {
     this.setState({zip: e.target.value})
   },
-  handleCreationDateChange: function (e) {
-    this.setState({creation_date:e.target.value})
+  handleCreationDateChange: function (value) {
+    this.setState({creation_date:value})
   },
   handleFinalQuoteIdChange: function (e) {
     this.setState({final_quote_id:e.target.value})
@@ -184,51 +181,52 @@ var DistributionForm = React.createClass({
       </div>
       {/* address input */}
       <div className="form-group" id="address">
-      <h3>Distribution Address</h3> 
-      <p>leave blank if not applicable</p> 
-          <Input 
-        label="Contact Name"
-        type="text"
-        name="distribution[contact_name]"
-        id="distribution_contact_name"
-        onChange={this.handleContactChange}
-        />
-      <Input 
-        label="Street"
-        type="text"
-        name="distribution[street]"
-        id="distribution_street"
-        onChange={this.handleStreetChange}
-        />
-      <Input 
-        label='City'
-        type="text"
-        name="distribution[city]"
-        id="distribution_city"
-        groupClassName="col-sm-4 col-lg-4 col-md-4"
-        onChange={this.handleCityChange}
-        />
-      <StateSelector 
-        groupClassName="col-sm-4"
-        onChange={this.handleAddressStateChange}
-        />
-      <Input 
-          label='Zip Code' 
+        <h3>Distribution Address</h3> 
+        <p>leave blank if not applicable</p> 
+            <Input 
+          label="Contact Name"
           type="text"
-          name="distribution[zip]"
-          id="distribution_zip"
-          groupClassName="col-sm-4 col-lg-4 col-md-4"
-          onChange={this.handleZipChange}
+          name="distribution[contact_name]"
+          id="distribution_contact_name"
+          onChange={this.handleContactChange}
           />
-        <br/>
+        <Input 
+          label="Street"
+          type="text"
+          name="distribution[street]"
+          id="distribution_street"
+          onChange={this.handleStreetChange}
+          />
+        <Input 
+          label='City'
+          type="text"
+          name="distribution[city]"
+          id="distribution_city"
+          groupClassName="col-sm-4 col-lg-4 col-md-4"
+          onChange={this.handleCityChange}
+          />
+        <StateSelector 
+          groupClassName="col-sm-4"
+          onChange={this.handleAddressStateChange}
+          />
+        <Input 
+            label='Zip Code' 
+            type="text"
+            name="distribution[zip]"
+            id="distribution_zip"
+            groupClassName="col-sm-4 col-lg-4 col-md-4"
+            onChange={this.handleZipChange}
+            />
+          <br/>
       </div>
       {/* distribution input */}
-      <div className="form_group" id="info">
-      <h3>Distribution Info</h3> 
-      <DatePicker
-        value={this.state.value}
-        onChange={this.handleCreationDateChange} 
-        required/>
+      <div className="form-group" id="info">
+        <h3>Distribution Info</h3> 
+        <DatePicker
+          label="Creation Date"
+          value={this.state.creation_date}
+          onChange={this.handleCreationDateChange} 
+          required/>
 
         <Input 
           type="text"
@@ -236,18 +234,18 @@ var DistributionForm = React.createClass({
           name="distribution[final_quote_id]"
           id="final_quote_id"
           onChange={this.handleFinalQuoteIdChange}
-          required/>
+          />
         <Input 
           type="text"
           label="Po Number" 
           name="distribution[po_number]"
           id="po_number"
           onChange={this.handlePoNumberChange}
-          required/>
-      </div>
+          />
+        </div>
       <Button className="form-group" type="submit" value="Post">Submit</Button>
 
-      </form>
+    </form>
 
     )
   }
@@ -261,10 +259,16 @@ var DistrictsAutoSuggest = React.createClass({
 
   handleChange: function(event){
     this.setState({ input: event.target.value})
+    this.props.onChange(event.target.value)
+    
   },
 
   handleClick: function (district) {
     this.setState({input:district})
+    this.props.onChange(district)
+
+    
+    
   },
 
   getSuggestions: function(input) {
@@ -276,7 +280,6 @@ var DistrictsAutoSuggest = React.createClass({
     var results = options.filter(function (district) {
       return district.match(regex) && district != input
     });
-    console.log(results)
     return results;
   },
 
@@ -308,7 +311,8 @@ var DistrictsAutoSuggest = React.createClass({
           type="text"
           ref="field"
           onChange={this.handleChange} 
-          value={this.state.input}/>
+          value={this.state.input}
+          required/>
         <ul className="list-unstyled">
           {suggestions}
         </ul>
@@ -318,8 +322,11 @@ var DistrictsAutoSuggest = React.createClass({
 })
 
 var StateSelector = React.createClass({
-  
   render: function() {
+    var req = ""
+    if (this.props.required != null) {
+      req = "required"
+    }
     return (
       <Input 
         onChange={this.props.onChange}
@@ -327,7 +334,8 @@ var StateSelector = React.createClass({
         label="State" 
         name="state" 
         id="state" 
-        groupClassName={this.props.groupClassName}>
+        groupClassName={this.props.groupClassName}
+        >
 
         <option value="">N/A</option> 
         <option value="AK"> Alaska</option>

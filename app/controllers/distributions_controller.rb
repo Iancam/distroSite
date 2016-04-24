@@ -1,14 +1,21 @@
 class DistributionsController < ApplicationController
 
   def create
-  	@distribution = Distribution.new(params[:distribution])
-    @distribution.user_id = current_user["id"]
-    @distribution.district_id = params['district']['id']
-    if @distribution.save
-      redirect_to '/distributions/index', notice: 'successfully created distribution'
-		else
-      redirect_to '/distributions/index', notice: 'failed to create a distribution'
-		end
+  	respond_to do |format|
+      state = params["district_state"]
+      name = params["district_name"]
+      district_id = District.where(state: state, name:name).pluck(:pid)
+      distribution = Distribution.new(params[:distribution])
+      distribution.user_id = current_user["id"]
+      distribution.district_id = district_id[0]
+      if distribution.save
+        format.html{redirect_to '/distributions/index', notice: 'successfully created distribution'}
+  		  format.json{render json: distribution}
+      else
+        format.html{redirect_to '/distributions/index', notice: 'failed to create a distribution'}
+        format.json{render :json => { :errors => distribution.errors.full_messages }, :status => 422}
+  		end
+    end
 
   end
 
@@ -42,7 +49,7 @@ class DistributionsController < ApplicationController
     respond_to do |format|
       #return nothing for json
       if order.save()
-        format.json { render :json => ["success"]}
+        format.json { render json: order}
       else
         format.json { render :json => ["failed to save"]}
       end
