@@ -23,9 +23,9 @@ table.table.table-striped
 			- @distributions.each do |distro|
 				= render partial: "distribution_row", locals: {distro: distro}
 			
-button.btn.btn-primary.new_distribution type="button" data-toggle="modal" data-target="#distributionModal" new distribution
+/ button.btn.btn-primary.new_distribution type="button" data-toggle="modal" data-target="#distributionModal" new distribution
 .react#distributionForm
-= render "distribution_modal"
+/ = render "distribution_modal"
 = render "iready_modal"
 = render "ready_modal"
 = render "end_user_modal"
