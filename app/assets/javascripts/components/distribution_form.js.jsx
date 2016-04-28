@@ -1,10 +1,11 @@
 var React = require("react");
 var ReactBootstrap = require("react-bootstrap");
 var DatePicker = require("react-bootstrap-date-picker").default;
+var AutoSuggest = require("./AutoSuggest")
+
 var Input = ReactBootstrap.Input;
 var Button= ReactBootstrap.Button;
 var Modal = ReactBootstrap.Modal;
-var FormControl = ReactBootstrap.FormControl;
 
 var DistributionModal = React.createClass({
   getInitialState: function() {
@@ -18,10 +19,9 @@ var DistributionModal = React.createClass({
   open: function() {
     this.setState({ showModal: true });
   },
-  submitForm: function () {
-    this.refs.form.handleSubmit()
-  },
+
   handleDistributionSubmit: function (distribution) {
+    console.log(this.props.url, distribution)
     $.ajax({
       type: "Post",
       url: this.props.url,
@@ -36,7 +36,6 @@ var DistributionModal = React.createClass({
       }.bind(this)
     })
     this.close()
-    window.location.reload(true)
   },
   render: function() {
     return (
@@ -99,12 +98,15 @@ var DistributionForm = React.createClass({
         po_number: this.state.po_number.trim()
       }
     }
-    console.log(params)
+
     if (!params.authenticity_token || 
         !params.district_state ||
         !params.district_name ||      
         !params.distribution.creation_date
-        ) { return; }
+        ) { 
+      console.log(params)
+      return; 
+    }
 
     
     
@@ -116,7 +118,7 @@ var DistributionForm = React.createClass({
     this.setState({district_state: e.target.value})
     var url = "/distributions/districts";
     $.ajax({
-      type: "POST",
+      type: "get",
       url: url,
       data: {state:{name: e.target.value}},
       dataType: "json",
@@ -173,7 +175,7 @@ var DistributionForm = React.createClass({
   },
   render: function() {
     var addressStyle = this.state.showAddress? {} : {display: 'none'}
-    console.log(addressStyle)
+
     return (
     <form  
       ref="form"
@@ -186,8 +188,9 @@ var DistributionForm = React.createClass({
       {/* district input */}
       <div className="form-group" id="district_input">
         <StateSelector onChange={this.handleDistrictStateChange} />
-        <DistrictsAutoSuggest
-          districts={this.state.districts}
+        <AutoSuggest
+          label="District"
+          options={this.state.districts}
           onChange={this.handleDistrictChange} />
       </div>
       {/* address input */}
@@ -270,76 +273,6 @@ var DistributionForm = React.createClass({
     )
   }
 });
-
-
-var DistrictsAutoSuggest = React.createClass({
-  getInitialState: function () {
-    return {input: "", suggestions:this.getSuggestions("")}
-  },
-
-  handleChange: function(event){
-    this.setState({ input: event.target.value})
-    this.props.onChange(event.target.value)
-    
-  },
-
-  handleClick: function (district) {
-    this.setState({input:district})
-    this.props.onChange(district)
-
-    
-    
-  },
-
-  getSuggestions: function(input) {
-    if (input.length < 2 ) {
-      return []
-    }
-    var options = this.props.districts;
-    var regex = RegExp(input, "i");
-    var results = options.filter(function (district) {
-      return district.match(regex) && district != input
-    });
-    return results;
-  },
-
-  onSuggestionsUpdateRequested: function({ value }) {
-    this.setState({
-      suggestions: this.getSuggestions(value)
-    });
-  },
-
-  render: function () {
-    var suggestions = this.getSuggestions(this.state.input).map(function(suggestion, index){
-        return (
-          <li key={index}>
-            <Button 
-            bsStyle="default"
-            onClick= {function(){this.handleClick(suggestion)}.bind(this)}
-            name={suggestion}>
-
-            {suggestion}
-            </Button>
-          </li>
-        )
-      }.bind(this));
-
-    return (
-      <div className="typeahead">
-        <Input 
-          label="District"
-          type="text"
-          ref="field"
-          onChange={this.handleChange} 
-          value={this.state.input}
-          required/>
-        <ul className="list-unstyled">
-          {suggestions}
-        </ul>
-    </div>
-    )
-  }
-})
 
 var StateSelector = React.createClass({
   render: function() {

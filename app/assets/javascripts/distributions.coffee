@@ -4,7 +4,7 @@
 ReactDOM = require('react-dom');
 React  = require('react');
 DistributionModal = require('./components/distribution_form');
-
+Distributions = require('./components/your_distributions')
 ready = ->
   $ ->
     
@@ -12,7 +12,7 @@ ready = ->
     #MARK: React
     #MARK: disribution form
     ReactDOM.render(
-      <DistributionModal 
+      <Distributions 
       url="/distributions"
       authenticity_token={$('meta[name=csrf-token]').attr('content')}/>, 
         document.getElementById('distributionForm')

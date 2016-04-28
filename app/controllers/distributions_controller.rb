@@ -39,23 +39,6 @@ class DistributionsController < ApplicationController
     end
   end
 
-  def add_order
-    # save order
-    order = Order.new()
-    order.distribution_id = params["distribution"]["id"]
-    order.contact_name = params[:contact]
-    order.school_id    = params[:school]
-
-    respond_to do |format|
-      #return nothing for json
-      if order.save()
-        format.json { render json: order}
-      else
-        format.json { render :json => ["failed to save"]}
-      end
-    end
-  end
-
   def index
     if not current_user
       redirect_to log_in_path
@@ -64,9 +47,24 @@ class DistributionsController < ApplicationController
       @distributions = Distribution.where(user_id: user_id)
       @distribution = Distribution.new
       @schoolMap = {}
+      distribution_information = []
       @distributions.each do |d|
-        schools = School.where(district_id: d.district_id)
-        @schoolMap[d.district_id]= schools.collect { |e| [e.pid, e.name] }
+        schools = School.where(district_id: d.district_id).collect { |e| [e.pid, e.name, e.enrollment] }
+        d_with_district = d.attributes
+        d_with_district["district"] = District.where(pid: d.district_id)[0]
+        
+        district_options = []
+        if d_with_district["district"]
+          state = d_with_district["district"]["state"]
+          district_options = District.where(state: state).pluck('name').uniq
+        end
+        distribution_information << {distribution: d_with_district, schools: schools, district_options:district_options }
+        @schoolMap[d.district_id] = schools
+      end
+
+      respond_to do |format|
+        format.html {render "index"}
+        format.json {render json: distribution_information}
       end
     end
   end
@@ -82,8 +80,22 @@ class DistributionsController < ApplicationController
     end
   end
 
-  def edit
-    
+  def update
+    respond_to do |format|
+      if params["field"] == "district_id"
+        value = params["value"]
+        params["value"] = District.where(state: value["state"], name: value["name"]).pluck('pid')[0]
+      end
+      distribution = Distribution.find_by(id:params["id"])
+      puts ({params["field"] => params["value"]})
+      if distribution.update(params["field"]=> params["value"])
+        format.json { render json: {status: "ok"}}
+      else
+        puts distribution.errors.full_messages
+        format.html { render :edit }
+        format.json { render json: distribution.errors.full_messages, status: :unprocessable_entity }
+      end
+    end
   end
 
 

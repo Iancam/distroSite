@@ -30,23 +30,35 @@ class EndUsersController < ApplicationController
 			if order_type.save()
 				order_type_save = true
 			end
-		elsif params["ready_order"]
-			ready = params['ready_order']
-			order_type = ReadyOrder.new()
-			order_type.subject  = ready['subject']
-			order_type.order_id = order.id
-			1.upto(8) { |n|
-			 	order_type["grade_#{n}_teacher"] = ready["grade_#{n}_teacher"]
-				order_type["grade_#{n}_student"] = ready["grade_#{n}_student"]
- 	 		}
-			if order_type.save()
-				order_type_save = true
+		elsif params["ready_orders"]
+			params['ready_orders'].each do |subject, grades|
+				order_type = ReadyOrder.new()
+				order_type.subject  = subject
+				order_type.order_id = order.id
+				
+				order_type["grade_k_teacher"] = grades["grade_k_teacher"]
+				order_type["grade_k_student"] = grades["grade_k_student"]
+				order_type["toolbox"] = grades['toolbox']
+				 
+				1.upto(8) { |n|
+				 	order_type["grade_#{n}_teacher"] = grades["grade_#{n}_teacher"]
+					order_type["grade_#{n}_student"] = grades["grade_#{n}_student"]
+	 	 		}
+				if order_type.save()
+					order_type_save = true
+				end
 			end
 		end
-		if order_save and order_type_save
-			redirect_to "/distributions/index", notice: "saved end_user"
-		else 
-			redirect_to "/distributions/index", notice: "failed to save end user" 
+		respond_to do |format|
+			if order_save and order_type_save
+				format.json {render json: ["end user saved successfully"]}
+				# format.html {redirect_to "/distributions/index", notice: "saved end_user"}
+
+			else 
+				format.json {render json: ["end user failed to save successfully"]}
+
+				# format.html {redirect_to "/distributions/index", notice: "failed to save end user"}
+			end
 		end
 	end
 end
