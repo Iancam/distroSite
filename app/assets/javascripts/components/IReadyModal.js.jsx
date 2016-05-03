@@ -73,7 +73,6 @@ var IReadyModal = React.createClass({
 
 var IReadyForm = React.createClass({
   getInitialState: function() {
-    
     return {
       school:this.props.schools[0][0],
       contact_name:"",
@@ -82,6 +81,7 @@ var IReadyForm = React.createClass({
       enrollment: this.props.schools[0][2]
     }
   },
+  
   handleToolboxYesChange: function(e){
     this.setState({toolbox: true})
   },

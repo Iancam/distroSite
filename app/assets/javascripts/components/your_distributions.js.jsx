@@ -4,11 +4,12 @@ var IReadyModal = require("./IReadyModal");
 var ReadyModal = require("./ReadyModal");
 var DistributionModal = require("./distribution_form");
 var Editable = require("./Editable")
+var AlertDismissable = require("./AlertDismissable")
+var StateOptions = require("./StateOptions")
 // var AutoSuggest = require("./AutoSuggest")
 var Input = ReactBootstrap.Input;
 var Button= ReactBootstrap.Button;
 var Table = ReactBootstrap.Table;
-var Alert = ReactBootstrap.Alert;
 
 var Distributions = React.createClass({
   getInitialState: function () {
@@ -47,6 +48,7 @@ var Distributions = React.createClass({
     console.log(alert)
     this.setState({alert: alert, alertVisible: true})
   },
+
   render: function() {
     return (
       <div className="Distributions">
@@ -68,20 +70,7 @@ var Distributions = React.createClass({
   }
 })
 
-var AlertDismissable = React.createClass({
-  render() {
-    if (this.props.alertVisible) {
-      return (
-        <Alert bsStyle={this.props.style} onDismiss={this.handleAlertDismiss}>
-          <p>{this.props.message}</p>
-        </Alert>
-      );
-    } else {
-      return null
-    }
 
-  },
-});
 
 var DistributionTable = React.createClass({
   render: function () {
@@ -243,13 +232,7 @@ var Distribution = React.createClass({
   },
   
   render: function () {
-    const stateOptions = [["","N/A"],["AL","Alabama"],["AK","Alaska"],["AZ","Arizona"],["AR","Arkansas"],["CA","California"],["CO","Colorado"],["CT","Connecticut"],["DE","Delaware"],["FL","Florida"],["GA","Georgia"],["HI","Hawaii"],["ID","Idaho"],
-                          ["IL","Illinois"],["IN","Indiana"],["IA","Iowa"],["KS","Kansas"],["KY","Kentucky"],["LA","Louisiana"],["ME","Maine"],["MD","Maryland"],["MA","Massachusetts"],["VA","Virginia"],["MI","Michigan"],["WA","Washington"],
-                          ["MN","Minnesota"],["WV","West Virginia"],["MS","Mississippi"],["WI","Wisconsin"],["MO","Missouri"],["WY","Wyoming"],["MT","Montana"],["NE","Nebraska"],["NV","Nevada"],["NH","New Hampshire"],["NJ","New Jersey"],["NM","New Mexico"],
-                          ["NY","New York"],["NC","North Carolina"],["ND","North Dakota"],["OH","Ohio"],["OK","Oklahoma"],["OR","Oregon"],["PA","Pennsylvania"],["RI","Rhode Island"],["SC","South Carolina"],["SD","South Dakota"],["TN","Tennessee"],["TX","Texas"],
-                          ["UT","Utah"],["VT","Vermont"]].map(function(state, index){
-                            return <option key={index} value={state[0]}>{state[1]}</option>
-                            })
+    const stateOptions = StateOptions;
     let districtOptions = [<option key={0} value="">N/A</option>]
 
     if (this.state.district_options){

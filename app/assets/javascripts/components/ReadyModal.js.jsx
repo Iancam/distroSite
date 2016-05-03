@@ -25,7 +25,8 @@ var ReadyModal = React.createClass({
   },
 
   handleReadySubmit: function (Ready) {
-    Ready.distribution = this.props.distribution
+    Ready.distribution = {id:this.props.distribution}
+    console.log(Ready)
     $.ajax({
       type: "Post",
       url: this.props.url,
@@ -165,11 +166,12 @@ var ReadyForm = React.createClass({
     this.setState({[subject]:order})
   },
   render: function () {
-    var schoolOptions = this.props.schools.map(function (school) {
+    var schoolOptions = [<option key={0} value="">N/A</option>]
+    schoolOptions.push(this.props.schools.map(function (school) {
       return (
         <option key={school[0]} value={school[0]}>{school[1]}</option>
       )
-    })
+    }))
     return ( 
       <form 
         acceptCharset="UTF-8" 
@@ -178,13 +180,15 @@ var ReadyForm = React.createClass({
         <Input
           type="select" 
           onChange={this.handleSchoolChange}
-          label="School Name">
+          label="School Name"
+          required>
         {schoolOptions}
         </Input>
         <Input
           type="text" 
           onChange={this.handleContactNameChange}
-          label="Contact Name"/>
+          label="Contact Name"
+          required/>
 
         <Tabs activeKey={this.state.tab_key} onSelect={this.handleTabSelect} id="controlled-tab-example">
           <Tab eventKey="Math" title="Math">
