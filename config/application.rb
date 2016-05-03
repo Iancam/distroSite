@@ -23,7 +23,8 @@ module DistroSite
     # Do not swallions from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Diow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
-    
     config.browserify_rails.commandline_options = "-t reactify --extension=\".js.jsx\""
-  end
+    # config.browserify_rails.commandline_options = "-t [ babelify --presets [ es2015 react ] --extensions [ .js.jsx ]]"
+end
+
 end

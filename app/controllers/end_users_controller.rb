@@ -8,6 +8,42 @@ class EndUsersController < ApplicationController
 
 	end
 
+	def update_ready
+	respond_to do |format|
+      if params["field"] == "district_id"
+        value = params["value"]
+        params["value"] = District.where(state: value["state"], name: value["name"]).pluck('pid')[0]
+      end
+      distribution = Distribution.find_by(id:params["id"])
+      puts ({params["field"] => params["value"]})
+      if distribution.update(params["field"]=> params["value"])
+        format.json { render json: {status: "ok"}}
+      else
+        puts distribution.errors.full_messages
+        format.html { render :edit }
+        format.json { render json: distribution.errors.full_messages, status: :unprocessable_entity }
+      end
+    end
+	end
+
+	def update_iready
+		respond_to do |format|
+      if params["field"] == "district_id"
+        value = params["value"]
+        params["value"] = District.where(state: value["state"], name: value["name"]).pluck('pid')[0]
+      end
+      distribution = Distribution.find_by(id:params["id"])
+      puts ({params["field"] => params["value"]})
+      if distribution.update(params["field"]=> params["value"])
+        format.json { render json: {status: "ok"}}
+      else
+        puts distribution.errors.full_messages
+        format.html { render :edit }
+        format.json { render json: distribution.errors.full_messages, status: :unprocessable_entity }
+      end
+    end
+	end
+
 	def add_order
 		order = Order.new()
 		order.distribution_id = params["distribution"]["id"]
@@ -19,6 +55,9 @@ class EndUsersController < ApplicationController
 		order_save = false 
 		if order.save
 			order_save = true
+			puts "order succeeded saving"
+		else
+			puts "order failed to save"
 		end
 		if params["i_ready_orders"]
 			iready = params["i_ready_orders"]
@@ -39,7 +78,7 @@ class EndUsersController < ApplicationController
 				order_type["grade_k_teacher"] = grades["grade_k_teacher"]
 				order_type["grade_k_student"] = grades["grade_k_student"]
 				order_type["toolbox"] = grades['toolbox']
-				 
+
 				1.upto(8) { |n|
 				 	order_type["grade_#{n}_teacher"] = grades["grade_#{n}_teacher"]
 					order_type["grade_#{n}_student"] = grades["grade_#{n}_student"]

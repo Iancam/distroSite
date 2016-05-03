@@ -76,7 +76,7 @@ class DistributionsController < ApplicationController
     respond_to do |format|
       format.csv {send_data @distribution.to_csv}
       format.html
-      # format.json{send_data distribution.to_csv}
+      format.json{render json: @distribution}
     end
   end
 

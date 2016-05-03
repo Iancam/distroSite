@@ -4,6 +4,8 @@ class Order < ActiveRecord::Base
 	has_many :ready_orders, :dependent => :destroy
 	belongs_to :distribution
 	belongs_to :school
+	validates :distribution_id, presence: true
+	validates :school_id, presence: true
 	accepts_nested_attributes_for :school, :i_ready_orders, :ready_orders
 	
 	def assignSchool(name, district)

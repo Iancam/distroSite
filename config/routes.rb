@@ -13,7 +13,8 @@ Rails.application.routes.draw do
   # post 'end_users/add_ready'
   # post 'end_users/add_iready'
   post 'end_users/add_order'
-
+  post "end_users/update_ready"
+  post "end_users/update_iready"
   get 'distributions/index'
   get 'distributions/edit'
   get 'distributions/create'
