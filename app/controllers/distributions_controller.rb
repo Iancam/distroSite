@@ -50,15 +50,28 @@ class DistributionsController < ApplicationController
       distribution_information = []
       @distributions.each do |d|
         schools = School.where(district_id: d.district_id).collect { |e| [e.pid, e.name, e.enrollment] }
+        
         d_with_district = d.attributes
         d_with_district["district"] = District.where(pid: d.district_id)[0]
-        
         district_options = []
         if d_with_district["district"]
           state = d_with_district["district"]["state"]
           district_options = District.where(state: state).pluck('name').uniq
         end
-        distribution_information << {distribution: d_with_district, schools: schools, district_options:district_options }
+
+        orders = Order.where(distribution_id: d.id)
+        i_ready_users = []
+        ready_users = []
+        orders.each do |order| 
+          i_ready_users += IReadyOrder.where(order_id: order.id)
+          ready_users += ReadyOrder.where(order_id: order.id)
+        end
+
+        distribution_information << {distribution: d_with_district,
+                                      schools: schools,
+                                      district_options: district_options,
+                                      i_ready_users: i_ready_users,
+                                      ready_users: ready_users }
         @schoolMap[d.district_id] = schools
       end
 

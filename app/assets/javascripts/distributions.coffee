@@ -3,52 +3,31 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 ReactDOM = require('react-dom');
 React  = require('react');
-DistributionModal = require('./components/distribution_form');
 Distributions = require('./components/your_distributions')
+DistributionDetail = require("./components/DistributionDetailPage")
 ready = ->
   $ ->
     
-    #MARK: index
-    #MARK: React
-    #MARK: disribution form
-    ReactDOM.render(
-      <Distributions 
-      url="/distributions"
-      authenticity_token={$('meta[name=csrf-token]').attr('content')}/>, 
-        document.getElementById('distributionForm')
+    distributionEl = document.getElementById('distribution')
+    distributionsEl = document.getElementById('distributions')
+    if (distributionEl)
+      console.log distributionEl
+      ReactDOM.render(
+        <DistributionDetail 
+          url="/distributions"
+          authenticity_token={$('meta[name=csrf-token]').attr('content')}/>,
+        distributionEl
       )
-
-    # $('#distribution_creation_date').datepicker();
-
-    #MARK: distribution modal
-    
-
-    #add school information to end_user_modal
-    $(".end_user").click ->
-      #get the data from the link
-      schools = $(this).data('schools')
-      $('.school').empty()
-      #use the data to render the schools selector
-      for arr in schools
-        id = arr[0] 
-        name = arr[1] 
-        $('.school').append("<option value='#{id}'>#{name}</option>")
+    else if (distributionsEl)
+      console.log distributionsEl
+      ReactDOM.render(
+        <Distributions 
+          url="/distributions"
+          authenticity_token={$('meta[name=csrf-token]').attr('content')}/>,
+        distributionsEl
+      )
       
-      #use data to add hidden field with distribution id
-      distribution_id = $(this).data('distribution')
-      $(".distribution_id").val(distribution_id)
-
-    #submit new ready user
-    $("#submit_ready").click ->
-      console.log "registered submit_ready"
-      $("#new_ready").submit()
-    #submit new Iready user
-    $("#submit_iready").click ->
-      console.log "registered submit_iready"
-      $("#new_iready").submit()
-
-    #MARK: distribution form 
-  
+    
 
   
 $(document).ready(ready)

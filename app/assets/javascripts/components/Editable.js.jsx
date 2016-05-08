@@ -97,15 +97,14 @@ var Editable = React.createClass({
       editStyle={}
     }
     return (
-      <div 
-        className={this.props.className}>
+      <div className={this.props.className}>
         <div style={editStyle}>
           {input}
         </div>
         <div
           onClick={this.handleClick} 
           style={valueStyle}>
-          {this.props.value}
+          <span className="editableValue">{this.props.value || '"blank"'}</span>
         </div>
       </div>
      ) 

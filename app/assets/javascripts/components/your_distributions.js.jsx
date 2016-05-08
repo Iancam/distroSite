@@ -6,10 +6,12 @@ var DistributionModal = require("./distribution_form");
 var Editable = require("./Editable")
 var AlertDismissable = require("./AlertDismissable")
 var StateOptions = require("./StateOptions")
-// var AutoSuggest = require("./AutoSuggest")
+var _ = require("lodash")
+var update = require('react-addons-update');
 var Input = ReactBootstrap.Input;
 var Button= ReactBootstrap.Button;
 var Table = ReactBootstrap.Table;
+var Collapse = ReactBootstrap.Collapse;
 
 var Distributions = React.createClass({
   getInitialState: function () {
@@ -18,6 +20,11 @@ var Distributions = React.createClass({
             style:""},
           alertVisible: false}
   },
+  addDistribution: function(d) {
+    d.show_detail = false
+    newState = update(this.state, {distributions: {$push: [d]}})
+    this.setState(newState)
+  },
 
   loadDistributionsFromServer: function(){
     $.ajax({
@@ -25,13 +32,16 @@ var Distributions = React.createClass({
       dataType: 'json',
       cache: false,
       success: function(data) {
-        this.setState({distributions: data});
+        for (var i = 0; i < data.length; i++) {
+          this.addDistribution(data[i])
+        }
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString());
       }.bind(this)
     });
   },
+
   componentDidMount: function() {
     this.loadDistributionsFromServer();
     // setInterval(this.loadCommentsFromServer, this.props.pollInterval);
@@ -49,6 +59,57 @@ var Distributions = React.createClass({
     this.setState({alert: alert, alertVisible: true})
   },
 
+  handleFieldEdit: function(index, field, edit) {
+
+    oldValue = this.state.distributions[index].distribution[field]
+    id       = this.state.distributions[index].distribution.id
+    
+    newState = update(this.state, 
+      {distributions: {[index]: {distribution: {[field]: {$set: edit}}},
+    }})
+    this.setState(newState)
+    console.log(newState, this.state)
+    update = {
+      field:field,
+      value:edit,
+      id:id,
+    }
+    $.ajax({
+      type: "Post",
+      url: "/distributions/update",
+      dataType: "json",
+      data: update,
+      success: function (data) {
+        // this.props.handleNewDistribution(data)
+        this.handleNewAlert({
+          message:"Distribution successfully edited",
+          style:"success"
+        });
+        console.log("success")
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString())
+        newState = update(this.state, {distributions: 
+          {[index]: {[field]: {$set: oldValue}},
+        }})
+        this.handleNewAlert({
+          message:"Distribution failed to edit",
+          style:"warning"
+        });
+      }.bind(this)
+    })
+  },
+
+  handleToggleDetail: function(index) {
+    console.log("handleToggleDetail fired", this.state, index)
+    target = this.state.distributions[index].show_detail
+    newState = update(this.state, 
+      {distributions: {[index]: {show_detail: {$set: !target}},
+    }})
+    console.log(newState.distributions[index])
+    this.setState(newState)
+  },
+
   render: function() {
     return (
       <div className="Distributions">
@@ -61,7 +122,10 @@ var Distributions = React.createClass({
           onAlertShow={this.handleAlertShow}/>
         <DistributionTable 
           data={this.state.distributions}
-          onAlert={this.handleNewAlert} />
+          onAlert={this.handleNewAlert}
+          onConfirmEdit={this.handleFieldEdit}
+          onToggleDetail={this.handleToggleDetail}
+          />
         <DistributionModal
           url={this.props.url}
           authenticity_token={this.props.authenticity_token}/>
@@ -70,34 +134,46 @@ var Distributions = React.createClass({
   }
 })
 
-
-
 var DistributionTable = React.createClass({
   render: function () {
-    var distributionNodes = this.props.data.map(function(distro, index) {
-      var district_name = "Error: No district"
-      var district_state = "Error: No district"
+    var distributionNodes = []
+    var district_name = "Error: No district"
+    var district_state = "Error: No district"
+    for (var i = 0; i < this.props.data.length; i++) {
+      var distro = this.props.data[i]
       var url = "/distributions/" + distro.distribution.id
       if (distro.distribution.district != null) {
         district_state = distro.distribution.district.state
         district_name = distro.distribution.district.name
       }
-      return (
+      distribution = distro.distribution
+      distribution.district_name = district_name
+      distribution.district_state = district_state
+      console.log(distro)
+      distributionNodes.push(
         <Distribution
-          key={index}
+          key={i}
+          index={i}
           onAlert={this.props.onAlert}
-          district_state={district_state}
-          district_name={district_name}
-          creation_date={distro.distribution.creation_date}
-          final_quote_id={distro.distribution.final_quote_id}
-          po_number={distro.distribution.po_number}
-          schools={distro.schools}
+          distribution = {distribution}
           districtOptions = {distro.district_options}
-          distribution={distro.distribution.id}
+          show_detail = {distro.show_detail}
           url={url}
+          onToggleDetail={this.props.onToggleDetail}
+          onConfirmEdit={this.props.onConfirmEdit}
           />
       );
-    }.bind(this));
+      distributionNodes.push(
+        <DistributionDetail
+          index={i}
+          key={i+.1}
+          i_ready_users={this.distro.iready}
+          ready_users={this.distro.ready}
+          schools={distro.schools}
+          show_detail={this.props.data[i].show_detail}/>
+      )
+    }
+
     return (
       <Table striped bordered condensed hover>
         <thead>
@@ -123,111 +199,11 @@ var DistributionTable = React.createClass({
 });
 
 var Distribution = React.createClass({
-  getInitialState: function(){
-    return {
-      district_state:this.props.district_state,
-      district_name:this.props.district_name,
-      district_options:this.props.districtOptions,
-      creation_date:this.props.creation_date,
-      final_quote_id:this.props.final_quote_id,
-      po_number:this.props.po_number
-          }
-  },
-
   handleAlert: function(Alert){
     this.props.onAlert(Alert);
   },
-  handleConfirmEdit: function(field, value){
-    oldValue = this.state[field]
-    this.setState({[field]:value})
-    update = {
-      field:field,
-      value:value,
-      id:this.props.distribution}
-    $.ajax({
-      type: "Post",
-      url: "/distributions/update",
-      dataType: "json",
-      data: update,
-      success: function (data) {
-        // this.props.handleNewDistribution(data)
-        this.props.onAlert({
-          message:"Distribution successfully edited",
-          style:"success"
-        });
-        console.log("success")
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(this.props.url, status, err.toString())
-        this.state[field] = oldValue
-        this.props.onAlert({
-          message:"Distribution failed to edit",
-          style:"warning"
-        });
-      }.bind(this)
-    })
-  },
-  handleDistrictStateConfirmEdit: function(value){
-    console.log(value)
-    this.setState({district_state: value})
-    this.setState({district_name: "Choose a District"})
-    var url = "/distributions/districts";
-    $.ajax({
-      type: "Get",
-      url: url,
-      data: {state:{name: value}},
-      dataType: "json",
-      success: function (data) {
-        this.setState({district_options: data});
-        console.log(data)
-        return true
-       }.bind(this),
-      error: function (xhr, status, err){
-        console.log(url, status, err)
-        return false
-      }
-    })
-  },
-  handleDistrictNameConfirmEdit: function(value) {
-    const oldValue = this.state["district_name"]
-    this.setState({district_name: value})
-    const url ="/distributions/update"
-    update = {
-      field:"district_id",
-      value:{
-        state: this.state["district_state"],
-        name: value},
-      id:this.props.distribution}
-    $.ajax({
-      type: "Post",
-      url: url,
-      dataType: "json",
-      data: update,
-      success: function (data) {
-        // this.props.handleNewDistribution(data)
-        this.props.onAlert({
-          message:"Distribution successfully edited",
-          style:"success"
-        });
-        console.log("success")
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(url, status, err.toString())
-        this.state["district_name"] = oldValue
-        this.props.onAlert({
-          message:"Distribution failed to edit",
-          style:"warning"
-        });
-      }.bind(this)
-    })
-  },
-  canConfirmSelect:function(value){
-    return (value === "")? false: true
-  },
-  canConfirmDate:function(value){
-    return (value === "")? false: true
-  },
-  canConfirmNumber:function(value){
+
+  canConfirm:function(value){
     return (value === "")? false: true
   },
   
@@ -235,68 +211,86 @@ var Distribution = React.createClass({
     const stateOptions = StateOptions;
     let districtOptions = [<option key={0} value="">N/A</option>]
 
-    if (this.state.district_options){
-      districtOptions.push(this.state.district_options.map(function(district, index){
-        return (<option key={index+1} value={district}>{district}</option>)
+    if (this.props.district_options){
+      districtOptions.push(this.props.district_options.map(function(district, index){
+        return (
+          <option
+            key={index+1}
+            value={district}>
+            {district}
+          </option>)
       }))
     }
 
     return (
-    <tr>
-      <td><Editable
-            type="select"
-            canConfirm={this.canConfirmSelect}
-            value={this.state.district_state}
-            onConfirmEdit={this.handleDistrictStateConfirmEdit}>
-            {stateOptions}
-      </Editable></td>
-      <td><Editable
-            type="select"
-            canConfirm={this.canConfirmSelect}
-            value={this.state.district_name}
-            onConfirmEdit={this.handleDistrictNameConfirmEdit}>
-            {districtOptions}
-      </Editable></td>
-      <td><Editable
-            type="date"
-            canConfirm={this.canConfirmDate}
-            value={this.state.creation_date}
-            onConfirmEdit={this.handleConfirmEdit.bind(null,"creation_date")}>
+      <tr>
+        <td>{this.props.distribution.district_state}</td>
+        <td>{this.props.distribution.district_name} </td>
+        <td><Editable
+              type="date"
+              canConfirm={this.canConfirm}
+              value={this.props.distribution.creation_date}
+              onConfirmEdit={this.props.onConfirmEdit.bind(null,this.props.index,"creation_date")}
+              >
+        </Editable></td>
+        <td><Editable
+              type="number"
+              canConfirm={this.canConfirm}
+              value={this.props.distribution.final_quote_id}
+              onConfirmEdit={this.props.onConfirmEdit.bind(null,this.props.index,"final_quote_id")}
+              >
+        </Editable></td>
+        <td><Editable
+              type="number"
+              canConfirm={this.canConfirm}
+              value={this.props.distribution.po_number}
+              onConfirmEdit={this.props.onConfirmEdit.bind(null,this.props.index,"po_number")}
+              >
+        </Editable></td>
+        <td> <ReadyModal
+              authenticity_token={this.props.authenticity_token}
+              distribution={this.props.distribution.id} 
+              schools={this.props.schools}
+              onSubmit={this.handleReadySubmit}
+              onAlert={this.handleAlert}  
+              url='/end_users/add_order'/> 
+        </td>
+        <td> <IReadyModal
+              authenticity_token={this.props.authenticity_token}
+              distribution={this.props.distribution} 
+              schools={this.props.schools}
+              onSubmit={this.handleIReadySubmit}
+              onAlert={this.handleAlert}              
+              url='/end_users/add_order'/> 
+        </td>
+        <td><Button onClick={ this.props.onToggleDetail.bind(null,this.props.index) }>
+            {(this.props.show_detail)? "hide detail": "show detail"}
+          </Button></td>
+      </tr>
+      
 
-      </Editable></td>
-      <td><Editable
-            type="number"
-            canConfirm={this.canConfirmNumber}
-            value={this.state.final_quote_id}
-            onConfirmEdit={this.handleConfirmEdit.bind(null,"final_quote_id")}>
-
-      </Editable></td>
-      <td><Editable
-            type="number"
-            canConfirm={this.canConfirmNumber}
-            value={this.state.po_number}
-            onConfirmEdit={this.handleConfirmEdit.bind(null,"po_number")}>
-
-      </Editable></td>
-      <td> <ReadyModal
-            authenticity_token={this.props.authenticity_token}
-            distribution={this.props.distribution} 
-            schools={this.props.schools}
-            onSubmit={this.handleReadySubmit}
-            onAlert={this.handleAlert}  
-            url='/end_users/add_order'/> 
-      </td>
-      <td> <IReadyModal
-            authenticity_token={this.props.authenticity_token}
-            distribution={this.props.distribution} 
-            schools={this.props.schools}
-            onSubmit={this.handleIReadySubmit}
-            onAlert={this.handleAlert}              
-            url='/end_users/add_order'/> 
-      </td>
-      <td><a href={this.props.url}>Show Detail</a></td>
-    </tr>
     )
+  }
+})
+
+var DistributionDetail = React.createClass({
+  render: function () {
+    console.log(this)
+    if (this.props.show_detail) {
+      return (
+        <tr><td colSpan="8">
+
+          <ReadyUsers 
+          data={this.props.ready_users}/>
+          <IReadyUsers 
+          data={this.props.i_ready_users}/>
+        </td></tr>
+      )
+    } else {
+      return null
+    }
+
+    
   }
 })
 
