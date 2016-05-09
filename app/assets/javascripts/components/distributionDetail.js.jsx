@@ -32,16 +32,24 @@ var DistributionDetail = React.createClass({
 
 var ReadyUsers = React.createClass({
   getInitialState: function () {
+    var show_teacher_units = (new Array(this.props.data.length)).map(()=>false);
+    var show_student_units = (new Array(this.props.data.length)).map(()=>false);
+
     return {
-            show_teacher_units: false,
-            show_student_units: false,
+            show_teacher_units: show_teacher_units,
+            show_student_units: show_student_units,
            }
   },
-  toggleShowStudentUnits:function() {
-    this.setState({show_student_units:!this.state.show_student_units})
+  toggleShowStudentUnits:function(index) {
+    var newVal = !this.state.show_student_units[index];
+    newState = update(this.state, {show_student_units: {[index]: {$set: newVal}}})
+    this.setState(newState)
   },
-  toggleShowTeacherUnits:function() {
-    this.setState({show_teacher_units:!this.state.show_teacher_units})
+  toggleShowTeacherUnits:function(index) {
+    console.log(index)
+    var newVal = !this.state.show_teacher_units[index];
+    newState = update(this.state, {show_teacher_units: {[index]: {$set: newVal}}})
+    this.setState(newState)
   },
 
   render: function () {
@@ -55,8 +63,11 @@ var ReadyUsers = React.createClass({
                 schools={this.props.schools} 
                 data={ready}
                 onConfirmEdit={this.props.onConfirmEdit}
+                toggleShowStudentUnits={this.toggleShowStudentUnits.bind(null, i)}
+                toggleShowTeacherUnits={this.toggleShowTeacherUnits.bind(null, i)}
               />)
-      ReadyUsers.push(<Units 
+      ReadyUsers.push(<Units
+        show_detail={this.state.show_student_units[i]}
         type="student"
         key={i+.1}
         index={i}
@@ -65,6 +76,7 @@ var ReadyUsers = React.createClass({
         onConfirmEdit={this.props.onConfirmEdit}
       />)
       ReadyUsers.push(<Units
+        show_detail={this.state.show_teacher_units[i]}
         type='teacher' 
         key={i+.2}
         index={i}
@@ -181,11 +193,11 @@ var ReadyUser = React.createClass({
            {subjectOptions}
           </Editable></td>
           <td><Button
-                onClick={this.toggleShowStudentUnits}>
+                onClick={this.props.toggleShowStudentUnits}>
             {(this.props.show_student_units)? "Hide Student Units": "Show Student Units"}
           </Button></td>
           <td><Button
-                onClick={this.toggleShowTeacherUnits}>
+                onClick={this.props.toggleShowTeacherUnits}>
             {(this.props.show_teacher_units)? "Hide Teacher Units": "Show Teacher Units"}
           </Button></td>
         </tr>
@@ -285,26 +297,31 @@ var Units = React.createClass({
     var headerNodes = grades.map(function(grade, index){
       return (<th key={index}>{"GR. "+grade.toString().toUpperCase()}</th>)
     })
-    return(
-      <tr >
-        <td colSpan="8">
-        <h4>{type.charAt(0).toUpperCase() + type.slice(1)}</h4>
-        <Table>
-          <thead>
-            <tr>
-              {headerNodes}
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              {gradeNodes}
-            </tr>
-          </tbody>
-        </Table>
-        </td>
-        
-      </tr>
-    )
+    if (this.props.show_detail) {
+      return(
+        <tr >
+          <td colSpan="8">
+          <h4>{type.charAt(0).toUpperCase() + type.slice(1)}</h4>
+          <Table>
+            <thead>
+              <tr>
+                {headerNodes}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                {gradeNodes}
+              </tr>
+            </tbody>
+          </Table>
+          </td>
+          
+        </tr>
+      )
+    } else {
+      return null
+    }
+    
   }
 })
 
