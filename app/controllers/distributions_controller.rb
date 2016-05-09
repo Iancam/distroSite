@@ -46,7 +46,6 @@ class DistributionsController < ApplicationController
       user_id = current_user['id']
       @distributions = Distribution.where(user_id: user_id)
       @distribution = Distribution.new
-      @schoolMap = {}
       distribution_information = []
       @distributions.each do |d|
         schools = School.where(district_id: d.district_id).collect { |e| [e.pid, e.name, e.enrollment] }
@@ -59,20 +58,26 @@ class DistributionsController < ApplicationController
           district_options = District.where(state: state).pluck('name').uniq
         end
 
-        orders = Order.where(distribution_id: d.id)
-        i_ready_users = []
-        ready_users = []
-        orders.each do |order| 
-          i_ready_users += IReadyOrder.where(order_id: order.id)
-          ready_users += ReadyOrder.where(order_id: order.id)
+        i_ready_users = IReadyOrder.where(distribution_id: d.id).to_a
+        ready_users = ReadyOrder.where(distribution_id: d.id).to_a
+        i_ready_users.map! do |e|
+          school = School.find_by(pid: e.school_id)
+          user = e.attributes
+          user["school"] = school
+          user
         end
-
+        ready_users.map! do |e|
+          school = School.find_by(pid: e.school_id)
+          user = e.attributes
+          user["school"] = school
+          user
+        end
+        puts i_ready_users
         distribution_information << {distribution: d_with_district,
                                       schools: schools,
                                       district_options: district_options,
                                       i_ready_users: i_ready_users,
                                       ready_users: ready_users }
-        @schoolMap[d.district_id] = schools
       end
 
       respond_to do |format|
@@ -85,7 +90,8 @@ class DistributionsController < ApplicationController
   def show
     id = params['id']
     @distribution = Distribution.find(id)
-    @distribution.orders.build
+    @distribution.i_ready_orders.build
+    @distribution.ready_orders.build
     respond_to do |format|
       format.csv {send_data @distribution.to_csv}
       format.html

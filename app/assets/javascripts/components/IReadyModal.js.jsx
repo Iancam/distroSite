@@ -19,6 +19,7 @@ var IReadyModal = React.createClass({
   },
   
   handleIReadySubmit: function (IReady) {
+    console.log(IReady)
     $.ajax({
       url: this.props.url,
       type: "post",
@@ -51,14 +52,14 @@ var IReadyModal = React.createClass({
         </Button>
         <Modal show={this.state.showModal} onHide={this.close}>
           <Modal.Header closeButton>
-            <Modal.Title>I-Ready User</Modal.Title>
+            <Modal.Title>i-Ready User</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <IReadyForm 
               authenticity_token={this.props.authenticity_token} 
               onSubmit={this.handleIReadySubmit}
               schools={this.props.schools}
-              distribution={this.props.distribution}
+              distribution_id={this.props.distribution_id}
               />
           </Modal.Body>
           <Modal.Footer>
@@ -74,7 +75,7 @@ var IReadyModal = React.createClass({
 var IReadyForm = React.createClass({
   getInitialState: function() {
     return {
-      school:this.props.schools[0][0],
+      school:"",
       contact_name:"",
       subject:"",
       toolbox: false,
@@ -106,29 +107,28 @@ var IReadyForm = React.createClass({
   },
   handleSubmit: function(e){
     e.preventDefault()
-    var distrbution= this.props.distrbution
     var school=this.state.school
     var contact_name=this.state.contact_name
     var subject=this.state.subject
     var toolbox=this.state.toolbox
     var enrollment=this.state.enrollment
     iready = {
-      distribution: {id:this.props.distribution},
+      distribution_id: this.props.distribution_id,
       school: school,
       contact_name: contact_name,
-      i_ready_orders:{
-        subject: subject,
-        toolbox: toolbox,
-        enrollment: enrollment
-      }
+      i_ready_order: true,
+      subject: subject,
+      toolbox: toolbox,
+      enrollment: enrollment
     }
     this.props.onSubmit(iready)
 
   },
   render: function () {
-    var schoolOptions = this.props.schools.map(function(school, index){
+    var schoolOptions = [<option key={0} value="">N/A</option>]
+    schoolOptions.push(this.props.schools.map(function(school, index){
       return <option key={school} value={index}>{school[1]}</option>
-    })
+    }))
     return ( 
       <form 
         acceptCharset="UTF-8" 
@@ -137,7 +137,8 @@ var IReadyForm = React.createClass({
         <Input
           type="select" 
           onChange={this.handleSchoolChange}
-          label="School Name">
+          label="School Name"
+          required>
           {schoolOptions}
         </Input>
         <Input
@@ -147,12 +148,14 @@ var IReadyForm = React.createClass({
         <Input
           type="select" 
           onChange={this.handleSubjectChange}
-          label="Subject">
+          label="Subject"
+          required>
+          <option value="">N/A</option>
           <option value="math">Math</option>
           <option value="reading">Reading</option>
           <option value="math & reading"> Math & Reading</option>
         </Input>
-        <h5>Toolbox For I-Ready</h5>
+        <h5>Toolbox For i-Ready</h5>
         <Input 
           label="Yes"
           type="checkbox" 
@@ -169,7 +172,9 @@ var IReadyForm = React.createClass({
           type="number" 
           onChange={this.handleEnrollmentChange}
           value={this.state.enrollment}
-          label="Enrollment"/>
+          label="Enrollment"
+          required/>
+
         <Button 
           className="form-group" 
           type="submit" 

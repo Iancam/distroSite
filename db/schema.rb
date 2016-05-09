@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160427175827) do
+ActiveRecord::Schema.define(version: 20160508050840) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,11 +41,13 @@ ActiveRecord::Schema.define(version: 20160427175827) do
 
   create_table "i_ready_orders", force: :cascade do |t|
     t.string   "subject"
-    t.integer  "order_id"
     t.boolean  "toolbox"
     t.integer  "enrollment"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.integer  "distribution_id"
+    t.string   "contact_name"
+    t.integer  "school_id"
   end
 
   create_table "iready_products", force: :cascade do |t|
@@ -64,17 +66,8 @@ ActiveRecord::Schema.define(version: 20160427175827) do
     t.datetime "updated_at",     null: false
   end
 
-  create_table "orders", force: :cascade do |t|
-    t.integer  "distribution_id"
-    t.string   "contact_name"
-    t.integer  "school_id"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
-  end
-
   create_table "ready_orders", force: :cascade do |t|
     t.string   "subject"
-    t.integer  "order_id"
     t.integer  "grade_1_teacher"
     t.integer  "grade_2_teacher"
     t.integer  "grade_3_teacher"
@@ -96,6 +89,9 @@ ActiveRecord::Schema.define(version: 20160427175827) do
     t.integer  "grade_k_teacher"
     t.integer  "grade_k_student"
     t.integer  "toolbox"
+    t.integer  "distribution_id"
+    t.string   "contact_name"
+    t.integer  "school_id"
   end
 
   create_table "schools", force: :cascade do |t|

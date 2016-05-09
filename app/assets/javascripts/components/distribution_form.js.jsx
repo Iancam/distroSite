@@ -2,7 +2,7 @@ var React = require("react");
 var ReactBootstrap = require("react-bootstrap");
 var DatePicker = require("react-bootstrap-date-picker").default;
 var AutoSuggest = require("./AutoSuggest")
-var stateOptions = require("./StateOptions")
+var StateOptions = require("./StateOptions")
 var Input = ReactBootstrap.Input;
 var Button= ReactBootstrap.Button;
 var Modal = ReactBootstrap.Modal;
@@ -187,7 +187,9 @@ var DistributionForm = React.createClass({
       <input type="hidden" name="authenticity_token" value={this.props.authenticity_token} />
       {/* district input */}
       <div className="form-group" id="district_input">
-        <StateSelector onChange={this.handleDistrictStateChange} />
+        <StateSelector 
+          onChange={this.handleDistrictStateChange} 
+          required/>
         <AutoSuggest
           label="District"
           options={this.state.districts}
@@ -245,6 +247,7 @@ var DistributionForm = React.createClass({
       {/* distribution input */}
       <div className="form-group" id="info">
         <h3>Distribution Info</h3> 
+        {/*TODO: make it so that date can't be earlier than today*/}
         <DatePicker
           label="Creation Date"
           value={this.state.creation_date}
@@ -253,14 +256,14 @@ var DistributionForm = React.createClass({
 
         <Input 
           type="text"
-          label="Final Quote Id" 
+          label="Final Quote ID" 
           name="distribution[final_quote_id]"
           id="final_quote_id"
           onChange={this.handleFinalQuoteIdChange}
           />
         <Input 
           type="text"
-          label="Po Number" 
+          label="PO Number" 
           name="distribution[po_number]"
           id="po_number"
           onChange={this.handlePoNumberChange}

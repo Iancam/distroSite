@@ -8,11 +8,21 @@ var DatePicker = require("react-bootstrap-date-picker").default;
 var Editable = React.createClass({
   getInitialState: function () {
     state = {}
-    state.value = (this.props.value || "")
+    if (this.props.type === "boolean") {
+      state.editValue = (this.props.value)? "true": "false"
+    } else {
+      state.editValue =  (this.props.value || "")
+    }
+    
     state.editValue = ""
     state.showEdit = false
     state.editing = this.props.editing
     return state
+  },
+  getDefaultProps: function() {
+    return {
+      canConfirm: (value) => (value === "")? false: true
+    };
   },
   handleClick: function(){
     this.setState({editing:true})
@@ -59,7 +69,7 @@ var Editable = React.createClass({
         buttonAfter={postfix}
         onChange={this.handleEditChangeValue}
         value={this.state.editValue}
-        placeholder={this.state.value}/>,
+        placeholder={this.props.value}/>,
         postfix
         ]
     } else if(this.props.type === "text" ||
@@ -73,7 +83,7 @@ var Editable = React.createClass({
             value={this.state.editValue}
 
             onChange={this.handleEditChangeEvent}
-            placeholder={this.state.value}
+            placeholder={this.props.value}
             />
     } else if(this.props.type === "select"){
       input = <Input 
@@ -85,16 +95,33 @@ var Editable = React.createClass({
                 type={this.props.type}
                 value={this.state.editValue}
                 onChange={this.handleEditChangeEvent}
-                placeholder={this.state.value}
+                placeholder={this.props.value}
                 >
                 {this.props.children}
                 </Input>
+    } else if (this.props.type === "boolean") {
+      input = <Input
+                className="editInput"
+                bsSize="small"
+                name={this.props.name}
+                buttonBefore={prefix}
+                buttonAfter={postfix}
+                type="checkbox"
+                value={this.state.editValue}
+                onChange={this.handleEditChangeEvent}
+                placeholder={this.props.value}
+                />
     }
     var valueStyle={}
     var editStyle={display: 'none'}
     if(this.state.editing){
       valueStyle={display: 'none'}
       editStyle={}
+    }
+    
+    var displayValue = this.props.value || 'blank'
+    if(this.props.value === 0){
+      displayValue = 0
     }
     return (
       <div className={this.props.className}>
@@ -104,7 +131,7 @@ var Editable = React.createClass({
         <div
           onClick={this.handleClick} 
           style={valueStyle}>
-          <span className="editableValue">{this.props.value || '"blank"'}</span>
+          <span className="editableValue">{displayValue}</span>
         </div>
       </div>
      ) 

@@ -1,5 +1,12 @@
 class ReadyOrder < ActiveRecord::Base
-	belongs_to :order
+	belongs_to :school
+	belongs_to :distribution
+
+	validates :distribution_id, presence: true
+	validates :school_id, presence: true
+
+	accepts_nested_attributes_for :school
+
 
 	def teacher_total
 		teacher_arr = ReadyOrder.column_names.map { |column| column.index("teacher")? self.attributes.values_at(column)[0] : 0}

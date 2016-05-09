@@ -25,7 +25,6 @@ var ReadyModal = React.createClass({
   },
 
   handleReadySubmit: function (Ready) {
-    Ready.distribution = {id:this.props.distribution}
     console.log(Ready)
     $.ajax({
       type: "Post",
@@ -63,7 +62,8 @@ var ReadyModal = React.createClass({
             <Modal.Title>Ready User</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <ReadyForm  
+            <ReadyForm
+              distribution={this.props.distribution}
               authenticity_token={this.props.authenticity_token} 
               onSubmit={this.handleReadySubmit}
               schools={this.props.schools}/>
@@ -128,13 +128,12 @@ var ReadyForm = React.createClass({
   handleSubmit: function(e){
     e.preventDefault()
     order = {
+          distribution_id:this.props.distribution,
           school:this.state.school,
           contact_name:this.state.contact_name,
-          ready_orders:{
-            Math:this.state.Math,
-            Reading:this.state.Reading,
-            Writing:this.state.Writing
-          }
+          Math:this.state.Math,
+          Reading:this.state.Reading,
+          Writing:this.state.Writing
         }
     this.props.onSubmit(order)
   },
@@ -211,7 +210,6 @@ var ReadyForm = React.createClass({
             <GradeDistribution 
               gradeDistribution={this.state.Writing}
               grades= {[2,3,4,5]}
-
               onStudentChange={this.handleStudentChange.bind(null,"Writing")}
               onTeacherChange={this.handleTeacherChange.bind(null,"Writing")}
               onToolboxChange={this.handleToolboxChange.bind(null,"Writing")}/>

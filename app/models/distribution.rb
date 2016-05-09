@@ -2,14 +2,18 @@ class Distribution < ActiveRecord::Base
 	attr_accessible :street, :city, :state, 
 					:contact_name, :creation_date, 
 					:final_quote_id, :po_number, 
-					:orders_attributes, :zip,
+					:i_ready_orders_attributes,
+					:ready_orders_attributes, :zip,
 					:districts_attributes,
 					:district_id
 	validates :district_id, presence: true
-	has_many :orders
+	has_many :i_ready_orders
+	has_many :ready_orders
+
 	belongs_to :district
 	belongs_to :user
-	accepts_nested_attributes_for :orders, :reject_if => lambda { |a| a[:content].blank? }, :allow_destroy => true
+	accepts_nested_attributes_for :i_ready_orders, :reject_if => lambda { |a| a[:content].blank? }, :allow_destroy => true
+	accepts_nested_attributes_for :ready_orders, :reject_if => lambda { |a| a[:content].blank? }, :allow_destroy => true
 
 
 	def to_csv

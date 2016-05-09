@@ -4,14 +4,16 @@ var IReadyModal = require("./IReadyModal");
 var ReadyModal = require("./ReadyModal");
 var DistributionModal = require("./distribution_form");
 var Editable = require("./Editable")
+var DistributionDetail = require("./DistributionDetail")
 var AlertDismissable = require("./AlertDismissable")
 var StateOptions = require("./StateOptions")
 var _ = require("lodash")
 var update = require('react-addons-update');
+
 var Input = ReactBootstrap.Input;
 var Button= ReactBootstrap.Button;
 var Table = ReactBootstrap.Table;
-var Collapse = ReactBootstrap.Collapse;
+
 
 var Distributions = React.createClass({
   getInitialState: function () {
@@ -59,17 +61,17 @@ var Distributions = React.createClass({
     this.setState({alert: alert, alertVisible: true})
   },
 
-  handleFieldEdit: function(index, field, edit) {
+  handleDistributionFieldEdit: function(index, field, edit) {
 
     oldValue = this.state.distributions[index].distribution[field]
     id       = this.state.distributions[index].distribution.id
-    
+
     newState = update(this.state, 
       {distributions: {[index]: {distribution: {[field]: {$set: edit}}},
     }})
     this.setState(newState)
-    console.log(newState, this.state)
-    update = {
+
+    change = {
       field:field,
       value:edit,
       id:id,
@@ -78,7 +80,48 @@ var Distributions = React.createClass({
       type: "Post",
       url: "/distributions/update",
       dataType: "json",
-      data: update,
+      data: change,
+      success: function (data) {
+        // this.props.handleNewDistribution(data)
+        this.handleNewAlert({
+          message:"Distribution successfully edited",
+          style:"success"
+        });
+        console.log("success")
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString())
+        newState = update(this.state, 
+          {distributions: {[index]: {[field]: {$set: oldValue}},
+        }})
+        this.handleNewAlert({
+          message:"Distribution failed to edit",
+          style:"warning"
+        });
+      }.bind(this)
+    })
+  },
+  
+  handleReadyFieldEdit:function(distro_index, ready_index, field, edit) {
+    // TODO: fill in edit details
+    console.log(distro_index, ready_index, field, edit)
+    oldValue = this.state.distributions[distro_index].ready_users[ready_index][field]
+    id = this.state.distributions[distro_index].ready_users[ready_index].id
+    
+    newState = update(this.state, 
+      {distributions: {[distro_index]: {ready_users: {[ready_index]: {[field]: {$set: edit}}}}},
+    })
+    this.setState(newState)
+    change = {
+      field:field,
+      value:edit,
+      id:id,
+    }
+    $.ajax({
+      type: "Post",
+      url: "/end_users/update_ready",
+      dataType: "json",
+      data: change,
       success: function (data) {
         // this.props.handleNewDistribution(data)
         this.handleNewAlert({
@@ -90,7 +133,7 @@ var Distributions = React.createClass({
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString())
         newState = update(this.state, {distributions: 
-          {[index]: {[field]: {$set: oldValue}},
+          {[distro_index]: {ready_users: {[ready_index]: {[field]: {$set: oldValue}}}}
         }})
         this.handleNewAlert({
           message:"Distribution failed to edit",
@@ -98,8 +141,49 @@ var Distributions = React.createClass({
         });
       }.bind(this)
     })
+    console.log(distro_index, ready_index, field, edit)
   },
 
+  handleIReadyFieldEdit:function(distro_index, iready_index, field, edit) {
+    // TODO: fill in edit details
+    oldValue = this.state.distributions[distro_index].i_ready_users[iready_index][field]
+    id       = this.state.distributions[distro_index].distribution.id
+    
+    newState = update(this.state, 
+      {distributions: {[distro_index]: {i_ready_users: {[iready_index]: {[field]: {$set: edit}}}},
+    }})
+    this.setState(newState)
+    change = {
+      field:field,
+      value:edit,
+      id:id,
+    }
+    $.ajax({
+      type: "Post",
+      url: "/end_users/update_iready",
+      dataType: "json",
+      data: change,
+      success: function (data) {
+        // this.props.handleNewDistribution(data)
+        this.handleNewAlert({
+          message:"Distribution successfully edited",
+          style:"success"
+        });
+        console.log("success")
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString())
+        newState = update(this.state, {distributions: 
+          {[distro_index]: {[iready_index]: {[field]: {$set: oldValue}}},
+        }})
+        this.handleNewAlert({
+          message:"Distribution failed to edit",
+          style:"warning"
+        });
+      }.bind(this)
+    })
+    console.log(distro_index, iready_index, field, edit)
+  },
   handleToggleDetail: function(index) {
     console.log("handleToggleDetail fired", this.state, index)
     target = this.state.distributions[index].show_detail
@@ -123,7 +207,9 @@ var Distributions = React.createClass({
         <DistributionTable 
           data={this.state.distributions}
           onAlert={this.handleNewAlert}
-          onConfirmEdit={this.handleFieldEdit}
+          onConfirmDistributionEdit={this.handleDistributionFieldEdit}
+          onConfirmReadyEdit={this.handleReadyFieldEdit}
+          onConfirmIReadyEdit={this.handleIReadyFieldEdit}
           onToggleDetail={this.handleToggleDetail}
           />
         <DistributionModal
@@ -141,6 +227,7 @@ var DistributionTable = React.createClass({
     var district_state = "Error: No district"
     for (var i = 0; i < this.props.data.length; i++) {
       var distro = this.props.data[i]
+      console.log(distro)
       var url = "/distributions/" + distro.distribution.id
       if (distro.distribution.district != null) {
         district_state = distro.distribution.district.state
@@ -149,31 +236,34 @@ var DistributionTable = React.createClass({
       distribution = distro.distribution
       distribution.district_name = district_name
       distribution.district_state = district_state
-      console.log(distro)
       distributionNodes.push(
         <Distribution
           key={i}
           index={i}
           onAlert={this.props.onAlert}
-          distribution = {distribution}
-          districtOptions = {distro.district_options}
-          show_detail = {distro.show_detail}
+          distribution={distribution}
+          schools={distro.schools}
+          districtOptions={distro.district_options}
+          show_detail={distro.show_detail}
           url={url}
           onToggleDetail={this.props.onToggleDetail}
-          onConfirmEdit={this.props.onConfirmEdit}
+          onConfirmEdit={this.props.onConfirmDistributionEdit}
           />
       );
       distributionNodes.push(
         <DistributionDetail
           index={i}
           key={i+.1}
-          i_ready_users={this.distro.iready}
-          ready_users={this.distro.ready}
+          i_ready_users={distro.i_ready_users}
+          ready_users={distro.ready_users}
           schools={distro.schools}
-          show_detail={this.props.data[i].show_detail}/>
+          show_detail={this.props.data[i].show_detail}
+          onConfirmReadyEdit={this.props.onConfirmReadyEdit}
+          onConfirmIReadyEdit={this.props.onConfirmIReadyEdit}
+          />
       )
     }
-
+    console.log(distributionNodes)
     return (
       <Table striped bordered condensed hover>
         <thead>
@@ -182,10 +272,10 @@ var DistributionTable = React.createClass({
             <th>District State </th> 
             <th>District Name  </th> 
             <th>Creation Date   </th> 
-            <th>Final Quote Id    </th> 
+            <th>Final Quote ID    </th> 
             <th>PO Number   </th> 
-            <th>Add I-Ready User</th> 
             <th>Add Ready User </th> 
+            <th>Add i-Ready User</th> 
             <th>Show Detail</th> 
           </tr>
         </thead>
@@ -203,9 +293,7 @@ var Distribution = React.createClass({
     this.props.onAlert(Alert);
   },
 
-  canConfirm:function(value){
-    return (value === "")? false: true
-  },
+  
   
   render: function () {
     const stateOptions = StateOptions;
@@ -228,21 +316,18 @@ var Distribution = React.createClass({
         <td>{this.props.distribution.district_name} </td>
         <td><Editable
               type="date"
-              canConfirm={this.canConfirm}
               value={this.props.distribution.creation_date}
               onConfirmEdit={this.props.onConfirmEdit.bind(null,this.props.index,"creation_date")}
               >
         </Editable></td>
         <td><Editable
               type="number"
-              canConfirm={this.canConfirm}
               value={this.props.distribution.final_quote_id}
               onConfirmEdit={this.props.onConfirmEdit.bind(null,this.props.index,"final_quote_id")}
               >
         </Editable></td>
         <td><Editable
               type="number"
-              canConfirm={this.canConfirm}
               value={this.props.distribution.po_number}
               onConfirmEdit={this.props.onConfirmEdit.bind(null,this.props.index,"po_number")}
               >
@@ -253,15 +338,15 @@ var Distribution = React.createClass({
               schools={this.props.schools}
               onSubmit={this.handleReadySubmit}
               onAlert={this.handleAlert}  
-              url='/end_users/add_order'/> 
+              url='/end_users/add_ready'/> 
         </td>
         <td> <IReadyModal
               authenticity_token={this.props.authenticity_token}
-              distribution={this.props.distribution} 
+              distribution_id={this.props.distribution.id} 
               schools={this.props.schools}
               onSubmit={this.handleIReadySubmit}
               onAlert={this.handleAlert}              
-              url='/end_users/add_order'/> 
+              url='/end_users/add_iready'/> 
         </td>
         <td><Button onClick={ this.props.onToggleDetail.bind(null,this.props.index) }>
             {(this.props.show_detail)? "hide detail": "show detail"}
@@ -273,25 +358,6 @@ var Distribution = React.createClass({
   }
 })
 
-var DistributionDetail = React.createClass({
-  render: function () {
-    console.log(this)
-    if (this.props.show_detail) {
-      return (
-        <tr><td colSpan="8">
 
-          <ReadyUsers 
-          data={this.props.ready_users}/>
-          <IReadyUsers 
-          data={this.props.i_ready_users}/>
-        </td></tr>
-      )
-    } else {
-      return null
-    }
-
-    
-  }
-})
 
 module.exports = Distributions

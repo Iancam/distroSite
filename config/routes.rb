@@ -10,9 +10,9 @@ Rails.application.routes.draw do
   delete "log_out" => "sessions#destroy", :as => "log_out"
   get "sign_up" => "users#new", :as => "sign_up"
   
-  # post 'end_users/add_ready'
-  # post 'end_users/add_iready'
-  post 'end_users/add_order'
+  post 'end_users/add_ready'
+  post 'end_users/add_iready'
+  # post 'end_users/add_order'
   post "end_users/update_ready"
   post "end_users/update_iready"
   get 'distributions/index'
