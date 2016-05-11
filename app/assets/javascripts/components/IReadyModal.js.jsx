@@ -19,27 +19,7 @@ var IReadyModal = React.createClass({
   },
   
   handleIReadySubmit: function (IReady) {
-    console.log(IReady)
-    $.ajax({
-      url: this.props.url,
-      type: "post",
-      dataType: 'json',
-      cache: false,
-      data: IReady,
-      success: function(data) {
-        this.props.onAlert({
-          message:"IReady Form successfully submitted",
-          style:"success"
-        });
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(this.props.url, status, err.toString());
-        this.props.onAlert({
-          message:"IReady Form failed to submit",
-          style:"warning"
-        });
-      }.bind(this)
-    });
+    this.props.onSubmit(IReady)
     this.close()
   },
   render: function() {
@@ -116,7 +96,6 @@ var IReadyForm = React.createClass({
       distribution_id: this.props.distribution_id,
       school: school,
       contact_name: contact_name,
-      i_ready_order: true,
       subject: subject,
       toolbox: toolbox,
       enrollment: enrollment

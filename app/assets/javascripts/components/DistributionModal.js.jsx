@@ -21,20 +21,8 @@ var DistributionModal = React.createClass({
   },
 
   handleDistributionSubmit: function (distribution) {
-    console.log(this.props.url, distribution)
-    $.ajax({
-      type: "Post",
-      url: this.props.url,
-      dataType: "json",
-      data: distribution,
-      success: function (data) {
-        console.log("auto-refresh not implemented")
-        // this.props.handleNewDistribution(data)
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(this.props.url, status, err.toString())
-      }.bind(this)
-    })
+    this.props.onDistributionSubmit(distribution)
+
     this.close()
   },
   render: function() {

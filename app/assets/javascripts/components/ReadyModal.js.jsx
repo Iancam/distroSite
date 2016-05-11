@@ -1,6 +1,7 @@
 var React = require("react");
 var ReactBootstrap = require("react-bootstrap");
 var _     = require("lodash")
+var update = require("react-addons-update")
 var Input = ReactBootstrap.Input;
 var Button= ReactBootstrap.Button;
 var Modal = ReactBootstrap.Modal;
@@ -25,30 +26,10 @@ var ReadyModal = React.createClass({
   },
 
   handleReadySubmit: function (Ready) {
-    console.log(Ready)
-    $.ajax({
-      type: "Post",
-      url: this.props.url,
-      dataType: "json",
-      data: Ready,
-      success: function (data) {
-        // this.props.handleNewDistribution(data)
-        this.props.onAlert({
-          message:"Ready Form successfully submitted",
-          style:"success"
-        });
-
-      }.bind(this),
-      error: function(xhr, status, err) {
-        console.error(this.props.url, status, err.toString())
-        this.props.onAlert({
-          message:"Ready Form failed to submit",
-          style:"warning"
-        });
-      }.bind(this)
-    })
+    this.props.onSubmit(Ready)    
     this.close()
   },
+
   render: function() {
     return (
       <div>
@@ -86,30 +67,23 @@ var ReadyForm = React.createClass({
       contact_name:"",
       Math:{
         hasBeenEdited:true,
-        grade_k_teacher:0,
-        grade_k_student:0,
         toolbox:0
       },
       Reading:{
         hasBeenEdited:false,
-        grade_k_teacher:0,
-        grade_k_student:0,
         toolbox:0
       },
       Writing:{
         hasBeenEdited:false,
-        grade_k_teacher:0,
-        grade_k_student:0,
         toolbox:0
       }
     }
-    for (var i = 1; i < 9; i++) {
-      init.Math["grade_"+i+"_teacher"] = 0
-      init.Math["grade_"+i+"_student"] = 0
-      init.Reading["grade_"+i+"_teacher"] = 0
-      init.Reading["grade_"+i+"_student"] = 0
-      init.Writing["grade_"+i+"_teacher"] = 0
-      init.Writing["grade_"+i+"_student"] = 0
+
+    for (subject of ["Math", "Reading", "Writing"]){
+      for (grade of ['k',1,2,3,4,5,6,7,8]){
+        init[subject]['grade_'+grade+'_student'] = {number:0,product:'Instruction'} 
+        init[subject]['grade_'+grade+'_teacher'] = {number:0,product:'Instruction'} 
+      }
     }
 
     return init
@@ -148,17 +122,23 @@ var ReadyForm = React.createClass({
 
     this.setState({tab_key:key});
   },
-  handleStudentChange(subject, grade, units){
-    order = this.state[subject] 
-    order["grade_"+grade+"_student"]=units
-    this.setState({[subject]:order},function(){console.log(this.state)})
-    
+
+  handleUnitsChange(subject, grade, group, units){
+    selection = "grade_"+grade+"_"+group
+    console.log(selection)
+    const newState = update(this.state,
+      {[subject]: {[selection]: {"number": {$set: units.target.value}}}})
+    this.setState(newState)
   },
-  handleTeacherChange(subject, grade, units){
-    order = this.state[subject] 
-    order["grade_"+grade+"_teacher"]=units
-    this.setState({[subject]:order})
+
+  handleProductTypeChange(subject, grade, group, event){
+    const selection = "grade_"+grade+"_"+group
+    newState = update(this.state,
+      {[subject]: {[selection]: {"product": {$set: event.target.value}}}})
+    this.setState(newState)
   },
+
+  
   handleToolboxChange(subject, units){
     order = this.state[subject]
     order["toolbox"] = units
@@ -191,28 +171,31 @@ var ReadyForm = React.createClass({
 
         <Tabs activeKey={this.state.tab_key} onSelect={this.handleTabSelect} id="controlled-tab-example">
           <Tab eventKey="Math" title="Math">
-            <GradeDistribution 
+            <GradeDistribution
+              subject="Math" 
               gradeDistribution={this.state.Math}
               grades= {['k',1,2,3,4,5,6,7,8]}
-              onStudentChange={this.handleStudentChange.bind(null,"Math")}
-              onTeacherChange={this.handleTeacherChange.bind(null,"Math")}
-              onToolboxChange={this.handleToolboxChange.bind(null,"Math")}/>
+              onUnitsChange={this.handleUnitsChange.bind(null, "Math")}
+              onToolboxChange={this.handleToolboxChange.bind(null,"Math")}
+              onProductTypeChange={this.handleProductTypeChange}/>
           </Tab>
           <Tab eventKey="Reading" title="Reading">
-            <GradeDistribution 
+            <GradeDistribution
+              subject="Reading" 
               gradeDistribution={this.state.Reading}
               grades= {['k',1,2,3,4,5,6,7,8]}
-              onStudentChange={this.handleStudentChange.bind(null,"Reading")}
-              onTeacherChange={this.handleTeacherChange.bind(null,"Reading")}
-              onToolboxChange={this.handleToolboxChange.bind(null,"Reading")}/>
+              onUnitsChange={this.handleUnitsChange.bind(null, "Reading")}
+              onToolboxChange={this.handleToolboxChange.bind(null,"Reading")}
+              onProductTypeChange={this.handleProductTypeChange}/>
           </Tab>
           <Tab eventKey="Writing" title="Writing">
             <GradeDistribution 
+              subject="Writing"
               gradeDistribution={this.state.Writing}
               grades= {[2,3,4,5]}
-              onStudentChange={this.handleStudentChange.bind(null,"Writing")}
-              onTeacherChange={this.handleTeacherChange.bind(null,"Writing")}
-              onToolboxChange={this.handleToolboxChange.bind(null,"Writing")}/>
+              onUnitsChange={this.handleUnitsChange.bind(null, "Writing")}
+              onToolboxChange={this.handleToolboxChange.bind(null,"Writing")}
+              onProductTypeChange={this.handleProductTypeChange}/>
           </Tab>
         </Tabs>
         <Button 
@@ -227,47 +210,50 @@ var ReadyForm = React.createClass({
 })
 
 GradeDistribution = React.createClass({
-  handleStudentChange(number, e){
-    this.props.onStudentChange(number, e.target.value)
-  },
-  handleTeacherChange(number, e){
-    this.props.onTeacherChange(number, e.target.value)
-  },
   handleToolboxChange(e){
     this.props.onToolboxChange(e.target.value)
   },
+
+  getGradeNode: function(grade, index, group){
+
+    return (
+      <Row key={index}>
+        <Col sm={5} md={5} lg={5}>
+          <Input
+          value={this.props.gradeDistribution["grade_"+grade+"_"+group]["number"]}
+          type="number"
+          onChange={this.props.onUnitsChange.bind(null, grade, group)}
+          label={"GR."+grade+" Units"} />
+        </Col>
+        <Col sm={5} md={5} lg={5}>
+          <ProductDropdown
+          onChange={this.props.onProductTypeChange}
+          gradeDistribution={this.props.gradeDistribution}
+          subject={this.props.subject}
+          grade={grade} 
+          group={group}
+         /></Col>
+      </Row>
+    )
+  },
+
   render: function(){
+    //group is either teacher or student
     var students = this.props.grades.map( function(grade,index){
-      return (
-      <Input
-        key={index}
-        value={this.props.gradeDistribution["grade_"+grade+"_student"]}
-        type="number"
-        onChange={this.handleStudentChange.bind(null, grade)}
-        label={"GR."+grade+" Student Units"} />
-      )
+      return this.getGradeNode(grade, index, "student")
     }.bind(this))
-
-    var teachers = this.props.grades.map( function(grade,index){
-      return (
-      <Input
-        key={index}
-        value={this.props.gradeDistribution["grade_"+grade+"_teacher"]}
-        type="number"
-        onChange={this.handleStudentChange.bind(null, grade)}
-        label={"GR."+grade+" Teacher Units"} />
-      )
+    var teachers = this.props.grades.map(function(grade, index){
+      return this.getGradeNode(grade, index, "teacher")
     }.bind(this))
-
-      
-
     return( 
       <div className="GradeDistribution form-group">
         <Row>
           <Col sm={6} md={6} lg={6}>
+            <h3>Students</h3>
             {students}
           </Col>
           <Col sm={6} md={6} lg={6}>
+            <h3>Teachers</h3>
             {teachers}
             <Input
               key="Toolbox"
@@ -281,5 +267,52 @@ GradeDistribution = React.createClass({
     )
   }
 })
+
+  
+
+var ProductDropdown = ({onChange, gradeDistribution, subject, grade, group}) => {
+  const options = {
+                  Math: [
+                          "Instruction",
+                          "Assessment",
+                          "Practice and Problem Solving",
+                          "Instruction + Assessment",
+                          "Instruction + Practice",
+                          "Instruction + Practice + Assessment",
+                          "Toolbox Access Booklet",
+                          ],
+                  Reading: [
+                          "Instruction",
+                          "Assessment",
+                          "Practice and Problem Solving",
+                          "Instruction + Assessment",
+                          "Instruction + Practice",
+                          "Instruction + Practice + Assessment",
+                          "Toolbox Access Booklet",
+                          ],
+                  Writing: [
+                          "Instruction",
+                          "Assessment",
+                          "Practice and Problem Solving",
+                          "Instruction + Assessment",
+                          "Instruction + Practice",
+                          "Instruction + Practice + Assessment",
+                          "Toolbox Access Booklet",
+                          ]
+                  }
+  const optionNodes = options[subject].map((option, index) =>{
+    return <option key={index} value={option}>{option}</option>
+  }) 
+  return(
+    <Input
+      onChange={onChange.bind(null, subject, grade, group)}
+      type="select"
+      label="Product Type"
+    >
+      {optionNodes}
+    </Input>
+  )
+}
+
 
 module.exports = ReadyModal

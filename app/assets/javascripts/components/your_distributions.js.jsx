@@ -2,7 +2,7 @@ var React = require("react");
 var ReactBootstrap = require("react-bootstrap");
 var IReadyModal = require("./IReadyModal");
 var ReadyModal = require("./ReadyModal");
-var DistributionModal = require("./distribution_form");
+var DistributionModal = require("./DistributionModal");
 var Editable = require("./Editable")
 var DistributionDetail = require("./DistributionDetail")
 var AlertDismissable = require("./AlertDismissable")
@@ -82,7 +82,6 @@ var Distributions = React.createClass({
       dataType: "json",
       data: change,
       success: function (data) {
-        // this.props.handleNewDistribution(data)
         this.handleNewAlert({
           message:"Distribution successfully edited",
           style:"success"
@@ -184,6 +183,7 @@ var Distributions = React.createClass({
     })
     console.log(distro_index, iready_index, field, edit)
   },
+
   handleToggleDetail: function(index) {
     console.log("handleToggleDetail fired", this.state, index)
     target = this.state.distributions[index].show_detail
@@ -193,7 +193,84 @@ var Distributions = React.createClass({
     console.log(newState.distributions[index])
     this.setState(newState)
   },
+  addIReady: function(IReady, index){
+    console.log(IReady, index)
+    newState= update(this.state,
+    {distributions: {[index]:{i_ready_users: {$push: [IReady]}}}})
+    this.setState(newState)
+  },
+  addReady: function(Ready,index){
+    newState= update(this.state,
+    {distributions: {[index]:{ready_users: {$push: [Ready]}}}})
+    this.setState(newState)
+  },
+  handleDistributionSubmit: function(d) {
+    this.handleNewAlert({style:"info",
+                         message:"waiting for new distribution to save"})
+    $.ajax({
+      type: "Post",
+      url: this.props.url,
+      dataType: "json",
+      data: d,
+      success: function (data) {
+        console.log("auto-refresh not implemented")
+        this.handleNewAlert({style:"success",
+                         message:"new distribution saved"})
+        this.addDistribution(data)
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString())
+      }.bind(this)
+    })
+  },
+  handleReadySubmit: function(index, ready){
+    url='/end_users/add_ready'
+    $.ajax({
+      type: "Post",
+      url: url,
+      dataType: "json",
+      data: ready,
+      success: function (data) {
+        this.addReady(data,index)
+        this.handleNewAlert({
+          message:"Ready Form successfully submitted",
+          style:"success"
+        });
 
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(url, status, err.toString())
+        this.handleNewAlert({
+          message:"Ready Form failed to submit",
+          style:"warning"
+        });
+      }.bind(this)
+    })
+  },
+  handleIReadySubmit: function(index, IReady){
+    console.log(IReady)
+    url='/end_users/add_iready'
+    $.ajax({
+      type: "Post",
+      url: url,
+      dataType: "json",
+      data: IReady,
+      success: function (data) {
+        this.addIReady(data,index)
+        this.handleNewAlert({
+          message:"IReady form successfully submitted",
+          style:"success"
+        });
+      }.bind(this),
+      error: function(xhr, status, err) {
+        console.error(this.props.url, status, err.toString())
+        this.handleNewAlert({
+          message:"IReady form failed to submit",
+          style:"warning"
+        });
+      }.bind(this)
+    })
+  },
   render: function() {
     return (
       <div className="Distributions">
@@ -207,6 +284,8 @@ var Distributions = React.createClass({
         <DistributionTable 
           data={this.state.distributions}
           onAlert={this.handleNewAlert}
+          onReadySubmit={this.handleReadySubmit}
+          onIReadySubmit={this.handleIReadySubmit}
           onConfirmDistributionEdit={this.handleDistributionFieldEdit}
           onConfirmReadyEdit={this.handleReadyFieldEdit}
           onConfirmIReadyEdit={this.handleIReadyFieldEdit}
@@ -214,7 +293,8 @@ var Distributions = React.createClass({
           />
         <DistributionModal
           url={this.props.url}
-          authenticity_token={this.props.authenticity_token}/>
+          authenticity_token={this.props.authenticity_token}
+          onDistributionSubmit={this.handleDistributionSubmit}/>
       </div>
       )
   }
@@ -227,7 +307,7 @@ var DistributionTable = React.createClass({
     var district_state = "Error: No district"
     for (var i = 0; i < this.props.data.length; i++) {
       var distro = this.props.data[i]
-      console.log(distro)
+
       var url = "/distributions/" + distro.distribution.id
       if (distro.distribution.district != null) {
         district_state = distro.distribution.district.state
@@ -246,6 +326,8 @@ var DistributionTable = React.createClass({
           districtOptions={distro.district_options}
           show_detail={distro.show_detail}
           url={url}
+          onReadySubmit={this.props.onReadySubmit.bind(null, i)}
+          onIReadySubmit={this.props.onIReadySubmit.bind(null, i)}
           onToggleDetail={this.props.onToggleDetail}
           onConfirmEdit={this.props.onConfirmDistributionEdit}
           />
@@ -263,7 +345,6 @@ var DistributionTable = React.createClass({
           />
       )
     }
-    console.log(distributionNodes)
     return (
       <Table striped bordered condensed hover>
         <thead>
@@ -336,17 +417,17 @@ var Distribution = React.createClass({
               authenticity_token={this.props.authenticity_token}
               distribution={this.props.distribution.id} 
               schools={this.props.schools}
-              onSubmit={this.handleReadySubmit}
+              onSubmit={this.props.onReadySubmit}
               onAlert={this.handleAlert}  
-              url='/end_users/add_ready'/> 
+              /> 
         </td>
         <td> <IReadyModal
               authenticity_token={this.props.authenticity_token}
               distribution_id={this.props.distribution.id} 
               schools={this.props.schools}
-              onSubmit={this.handleIReadySubmit}
+              onSubmit={this.props.onIReadySubmit}
               onAlert={this.handleAlert}              
-              url='/end_users/add_iready'/> 
+              /> 
         </td>
         <td><Button onClick={ this.props.onToggleDetail.bind(null,this.props.index) }>
             {(this.props.show_detail)? "hide detail": "show detail"}

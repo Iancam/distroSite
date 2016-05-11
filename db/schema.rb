@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160508050840) do
+ActiveRecord::Schema.define(version: 20160511003828) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,14 +84,32 @@ ActiveRecord::Schema.define(version: 20160508050840) do
     t.integer  "grade_6_student"
     t.integer  "grade_7_student"
     t.integer  "grade_8_student"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
     t.integer  "grade_k_teacher"
     t.integer  "grade_k_student"
     t.integer  "toolbox"
     t.integer  "distribution_id"
     t.string   "contact_name"
     t.integer  "school_id"
+    t.string   "gr_k_teacher_product"
+    t.string   "gr_k_student_product"
+    t.string   "gr_1_teacher_product"
+    t.string   "gr_1_student_product"
+    t.string   "gr_2_teacher_product"
+    t.string   "gr_2_student_product"
+    t.string   "gr_3_teacher_product"
+    t.string   "gr_3_student_product"
+    t.string   "gr_4_teacher_product"
+    t.string   "gr_4_student_product"
+    t.string   "gr_5_teacher_product"
+    t.string   "gr_5_student_product"
+    t.string   "gr_6_teacher_product"
+    t.string   "gr_6_student_product"
+    t.string   "gr_7_teacher_product"
+    t.string   "gr_7_student_product"
+    t.string   "gr_8_teacher_product"
+    t.string   "gr_8_student_product"
   end
 
   create_table "schools", force: :cascade do |t|
