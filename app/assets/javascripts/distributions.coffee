@@ -3,28 +3,18 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 ReactDOM = require('react-dom');
 React  = require('react');
-Distributions = require('./components/your_distributions')
-DistributionDetail = require("./components/DistributionDetailPage")
+Distributions = require('./components/Distributions')
 ready = ->
   $ ->
+    console.log "in distribution"
+    showUserDistributions = document.getElementById('distributions')
     
-    distributionEl = document.getElementById('distribution')
-    distributionsEl = document.getElementById('distributions')
-    if (distributionEl)
-      console.log distributionEl
+    if (showUserDistributions)
       ReactDOM.render(
-        <DistributionDetail 
+        <Distributions
           url="/distributions"
           authenticity_token={$('meta[name=csrf-token]').attr('content')}/>,
-        distributionEl
-      )
-    else if (distributionsEl)
-      console.log distributionsEl
-      ReactDOM.render(
-        <Distributions 
-          url="/distributions"
-          authenticity_token={$('meta[name=csrf-token]').attr('content')}/>,
-        distributionsEl
+        showUserDistributions
       )
       
     

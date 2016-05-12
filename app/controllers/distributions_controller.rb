@@ -45,10 +45,9 @@ class DistributionsController < ApplicationController
     else
       user_id = current_user['id']
       @distributions = Distribution.where(user_id: user_id).order(:district_id)
-      @distribution = Distribution.new
       distribution_information = []
       @distributions.each do |d|
-        distribution_information << getDistributionInfo(d)
+        distribution_information << d.distribution_info
       end
 
       respond_to do |format|
@@ -96,48 +95,6 @@ class DistributionsController < ApplicationController
       format.json {render json: districts}
       format.html {}
     end
-
   end
- 
-  def new
-  	@distribution = Distribution.new
-    @distribution.orders.build
-    # @distribution.orders.i_ready_orders.build
-    # @distribution.orders.ready_orders.build
-  	@district = District.new
-  end
-  private 
-
-  def getDistributionInfo(d)
-    schools = School.where(district_id: d.district_id).collect { |e| [e.pid, e.name, e.enrollment] }
-    d_with_district = d.attributes
-    d_with_district["district"] = District.where(pid: d.district_id)[0]
-    district_options = []
-    if d_with_district["district"]
-      state = d_with_district["district"]["state"]
-      district_options = District.where(state: state).pluck('name').uniq
-    end
-
-    i_ready_users = IReadyOrder.where(distribution_id: d.id).to_a
-    ready_users = ReadyOrder.where(distribution_id: d.id).to_a
-    i_ready_users.map! do |e|
-      school = School.find_by(pid: e.school_id)
-      user = e.attributes
-      user["school"] = school
-      user
-    end
-    ready_users.map! do |e|
-      school = School.find_by(pid: e.school_id)
-      user = e.attributes
-      user["school"] = school
-      user
-    end
-    {
-    distribution: d_with_district,
-    schools: schools,
-    district_options: district_options,
-    i_ready_users: i_ready_users,
-    ready_users: ready_users
-    }
-  end
+   
 end

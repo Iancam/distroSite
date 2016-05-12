@@ -25,8 +25,6 @@ Rails.application.routes.draw do
   # get "new_distribution" => "distributions#new", :as =>"new_distribution"
   root :to => "distributions#index"
 
-
-  resources :users
   resources :distributions
   resources :districts
 

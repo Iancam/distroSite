@@ -22,6 +22,7 @@ var Distributions = React.createClass({
             style:""},
           alertVisible: false}
   },
+
   addDistribution: function(d) {
     d.show_detail = false
     newState = update(this.state, {distributions: {$push: [d]}})
@@ -45,6 +46,7 @@ var Distributions = React.createClass({
   },
 
   componentDidMount: function() {
+    console.log("oh hi there, from the componentDidMount")
     this.loadDistributionsFromServer();
     // setInterval(this.loadCommentsFromServer, this.props.pollInterval);
   },
@@ -274,7 +276,7 @@ var Distributions = React.createClass({
   render: function() {
     return (
       <div className="Distributions">
-        <h2>Your Distributions</h2>
+        <h2>{(this.props.showAll)? "All Distributions": "Your Distributions"}</h2>
         <AlertDismissable 
           style={this.state.alert.style}
           message={this.state.alert.message}
@@ -357,7 +359,8 @@ var DistributionTable = React.createClass({
             <th>PO Number   </th> 
             <th>Add Ready User </th> 
             <th>Add i-Ready User</th> 
-            <th>Show Detail</th> 
+            <th>Show Detail</th>
+            <th>Download CSV</th>
           </tr>
         </thead>
         <tbody>
@@ -370,12 +373,6 @@ var DistributionTable = React.createClass({
 });
 
 var Distribution = React.createClass({
-  handleAlert: function(Alert){
-    this.props.onAlert(Alert);
-  },
-
-  
-  
   render: function () {
     const stateOptions = StateOptions;
     let districtOptions = [<option key={0} value="">N/A</option>]
@@ -418,7 +415,7 @@ var Distribution = React.createClass({
               distribution={this.props.distribution.id} 
               schools={this.props.schools}
               onSubmit={this.props.onReadySubmit}
-              onAlert={this.handleAlert}  
+              onAlert={this.props.onAlert}  
               /> 
         </td>
         <td> <IReadyModal
@@ -426,12 +423,13 @@ var Distribution = React.createClass({
               distribution_id={this.props.distribution.id} 
               schools={this.props.schools}
               onSubmit={this.props.onIReadySubmit}
-              onAlert={this.handleAlert}              
+              onAlert={this.props.onAlert}              
               /> 
         </td>
         <td><Button onClick={ this.props.onToggleDetail.bind(null,this.props.index) }>
             {(this.props.show_detail)? "hide detail": "show detail"}
           </Button></td>
+        <td><a href={"distributions/"+this.props.distribution.id+".csv"}>Download CSV</a></td>
       </tr>
       
 
