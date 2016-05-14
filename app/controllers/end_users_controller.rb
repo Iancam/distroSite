@@ -73,9 +73,9 @@ class EndUsersController < ApplicationController
         ready =  ReadyOrder.find_by(id: params["id"])
         puts ({params["field"] => params["value"]})
         if ready.update(params["field"]=> params["value"])
-          format.json { render json: {status: "ok"}}
+          format.json { render json: {ready: ready.attributes_with_school}}
         else
-          puts ready.errors.full_messages
+
           format.json { render json: ready.errors.full_messages, status: :unprocessable_entity }
         end
       end
@@ -86,10 +86,8 @@ class EndUsersController < ApplicationController
         iready = IReadyOrder.find_by(id: params["id"])
         puts ({params["field"] => params["value"]})
         if iready.update(params["field"]=> params["value"])
-          format.json { render json: {status: "ok"}}
+          format.json { render json: {iready: iready.attributes_with_school}}
         else
-          puts iready.errors.full_messages
-          format.html { render :edit }
           format.json { render json: iready.errors.full_messages, status: :unprocessable_entity }
         end
       end

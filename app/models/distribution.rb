@@ -29,16 +29,10 @@ class Distribution < ActiveRecord::Base
     i_ready_users = IReadyOrder.where(distribution_id: self.id).to_a
     ready_users = ReadyOrder.where(distribution_id: self.id).to_a
     i_ready_users.map! do |e|
-      school = School.find_by(pid: e.school_id)
-      user = e.attributes
-      user["school"] = school
-      user
+      e.attributes_with_school
     end
     ready_users.map! do |e|
-      school = School.find_by(pid: e.school_id)
-      user = e.attributes
-      user["school"] = school
-      user
+      e.attributes_with_school
     end
     {
     distribution: d_with_district,
@@ -58,7 +52,11 @@ class Distribution < ActiveRecord::Base
       #do ready orders
       # column names for orders, school and ReadyOrders
       csv << [""]+ReadyOrder.column_names + School.column_names     
-      self.ready_orders.each do |ready|
+      puts self.attributes
+      puts self.ready_orders
+      ready_orders = ReadyOrder.where(distribution_id: self.id).to_a
+
+      ready_orders.each do |ready|
         puts "school_id #{ready.school_id}"
         puts ready.attributes
         schoolFields = School.find_by(pid: ready.school_id).attributes
@@ -68,7 +66,8 @@ class Distribution < ActiveRecord::Base
       csv << [""]
       # header row including order, school and iready column names
       csv << [""]+IReadyOrder.column_names + School.column_names
-      self.i_ready_orders.each do |iready|
+      i_ready_orders = IReadyOrder.where(distribution_id: self.id).to_a
+      i_ready_orders.each do |iready|
         csv << [""]+iready.to_array
       end
     end

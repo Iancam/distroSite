@@ -159,7 +159,7 @@ var ReadyUser = React.createClass({
     var subjectOptions = ["","math","reading","writing"].map((subject, index)=>{
       return <option key={index} value={subject}>{subject}</option>
     })
-    console.log(this.props.data)
+    console.log (this.props.schools)
     return(
         //school
         <tr>

@@ -100,15 +100,14 @@ var Distributions = React.createClass({
   },
   
   handleReadyFieldEdit:function(distro_index, ready_index, field, edit) {
-    // TODO: fill in edit details
-    console.log(distro_index, ready_index, field, edit)
-    oldValue = this.state.distributions[distro_index].ready_users[ready_index][field]
-    id = this.state.distributions[distro_index].ready_users[ready_index].id
-    
+    const oldValue = this.state.distributions[distro_index].ready_users[ready_index][field]
+    const id = this.state.distributions[distro_index].ready_users[ready_index].id
+
     newState = update(this.state, 
       {distributions: {[distro_index]: {ready_users: {[ready_index]: {[field]: {$set: edit}}}}},
     })
     this.setState(newState)
+
     change = {
       field:field,
       value:edit,
@@ -120,7 +119,12 @@ var Distributions = React.createClass({
       dataType: "json",
       data: change,
       success: function (data) {
-        // this.props.handleNewDistribution(data)
+        if (field == "school_id") { 
+          newState = update(this.state, 
+            {distributions: {[distro_index]: {ready_users: {[ready_index]: {$set: data["ready"]}}}}})
+          this.setState(newState)
+        }
+
         this.handleNewAlert({
           message:"Distribution successfully edited",
           style:"success"
@@ -129,9 +133,10 @@ var Distributions = React.createClass({
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString())
-        newState = update(this.state, {distributions: 
-          {[distro_index]: {ready_users: {[ready_index]: {[field]: {$set: oldValue}}}}
+        newState = update(this.state, {
+          distributions: {[distro_index]: {ready_users: {[ready_index]: {[field]: {$set: oldValue}}}}
         }})
+        this.setState(newState)
         this.handleNewAlert({
           message:"Distribution failed to edit",
           style:"warning"
@@ -435,7 +440,7 @@ var Distribution = React.createClass({
         <td><Button onClick={ this.props.onToggleDetail.bind(null,this.props.index) }>
             {(this.props.show_detail)? "hide detail": "show detail"}
           </Button></td>
-        <td><a href={"distributions/"+this.props.distribution.id+".csv"}>Download CSV</a></td>
+        <td><a href={"/distributions/"+this.props.distribution.id+".csv"}>Download CSV</a></td>
       </tr>
       
 
