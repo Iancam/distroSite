@@ -113,6 +113,7 @@ var Distributions = React.createClass({
       value:edit,
       id:id,
     }
+
     $.ajax({
       type: "Post",
       url: "/end_users/update_ready",
@@ -126,7 +127,7 @@ var Distributions = React.createClass({
         }
 
         this.handleNewAlert({
-          message:"Distribution successfully edited",
+          message:"Ready user successfully edited",
           style:"success"
         });
         console.log("success")
@@ -138,7 +139,7 @@ var Distributions = React.createClass({
         }})
         this.setState(newState)
         this.handleNewAlert({
-          message:"Distribution failed to edit",
+          message:"Ready user failed to edit",
           style:"warning"
         });
       }.bind(this)

@@ -61,7 +61,9 @@ var ReadyUsers = React.createClass({
               <ReadyUser
                 key={i}
                 index= {i}
-                distribution_index= {this.props.distribution_index}
+                show_student_units={this.state.show_student_units[i]}
+                show_teacher_units={this.state.show_teacher_units[i]}
+                distribution_index={this.props.distribution_index}
                 schools={this.props.schools} 
                 data={ready}
                 onConfirmEdit={this.props.onConfirmEdit}
