@@ -23,11 +23,7 @@ var Distributions = React.createClass({
           alertVisible: false}
   },
 
-  addDistribution: function(d) {
-    d.show_detail = false
-    newState = update(this.state, {distributions: {$push: [d]}})
-    this.setState(newState)
-  },
+ 
 
   loadDistributionsFromServer: function(){
     $.ajax({
@@ -195,6 +191,11 @@ var Distributions = React.createClass({
     console.log(newState.distributions[index])
     this.setState(newState)
   },
+   addDistribution: function(d) {
+    d.show_detail = false
+    newState = update(this.state, {distributions: {$push: [d]}})
+    this.setState(newState)
+  },
   addIReady: function(IReady, index){
     console.log(IReady, index)
     newState= update(this.state,
@@ -205,6 +206,11 @@ var Distributions = React.createClass({
     newState= update(this.state,
     {distributions: {[index]:{ready_users: {$push: [Ready]}}}})
     this.setState(newState)
+  },
+  addReadies: function(readies, index){
+    for (ready of readies){
+      this.addReady(ready, index)
+    }
   },
   handleDistributionSubmit: function(d) {
     this.handleNewAlert({style:"info",
@@ -233,7 +239,7 @@ var Distributions = React.createClass({
       dataType: "json",
       data: ready,
       success: function (data) {
-        this.addReady(data,index)
+        this.addReadies(data,index)
         this.handleNewAlert({
           message:"Ready Form successfully submitted",
           style:"success"

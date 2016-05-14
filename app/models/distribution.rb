@@ -59,7 +59,9 @@ class Distribution < ActiveRecord::Base
       # column names for orders, school and ReadyOrders
       csv << [""]+ReadyOrder.column_names + School.column_names     
       self.ready_orders.each do |ready|
-        schoolFields = School.where(id: ready.school_id).to_array
+        puts "school_id #{ready.school_id}"
+        puts ready.attributes
+        schoolFields = School.find_by(pid: ready.school_id).attributes
         csv << [""]+ready.to_array
       end
       csv << [""]

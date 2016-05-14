@@ -55,8 +55,10 @@ var ReadyUsers = React.createClass({
   render: function () {
     var ReadyUsers = []
     for (var i = 0; i < this.props.data.length; i++) {
+      console.log(this.props.data)
       var ready = this.props.data[i]
-      ReadyUsers.push(<ReadyUser
+      ReadyUsers.push(
+              <ReadyUser
                 key={i}
                 index= {i}
                 distribution_index= {this.props.distribution_index}
@@ -157,6 +159,7 @@ var ReadyUser = React.createClass({
     var subjectOptions = ["","math","reading","writing"].map((subject, index)=>{
       return <option key={index} value={subject}>{subject}</option>
     })
+    console.log(this.props.data)
     return(
         //school
         <tr>
@@ -211,6 +214,7 @@ var IReadyUser = React.createClass({
     var subjectOptions = ["","math","reading"].map((subject, index)=>{
       return <option key={index} value={subject}>{subject}</option>
     })
+
     return( 
         //school
         <tr>
