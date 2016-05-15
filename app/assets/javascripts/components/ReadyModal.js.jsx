@@ -10,8 +10,6 @@ var Tabs  = ReactBootstrap.Tabs
 var Col   = ReactBootstrap.Col 
 var Row   = ReactBootstrap.Row
 
-
-
 var ReadyModal = React.createClass({
   getInitialState: function() {
     return {showModal:false}
@@ -47,7 +45,8 @@ var ReadyModal = React.createClass({
               distribution={this.props.distribution}
               authenticity_token={this.props.authenticity_token} 
               onSubmit={this.handleReadySubmit}
-              schools={this.props.schools}/>
+              schools={this.props.schools}
+              />
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.close}>Close</Button>
@@ -125,7 +124,6 @@ var ReadyForm = React.createClass({
 
   handleUnitsChange(subject, grade, group, units){
     selection = "grade_"+grade+"_"+group
-    console.log(selection)
     const newState = update(this.state,
       {[subject]: {[selection]: {"number": {$set: units.target.value}}}})
     this.setState(newState)
@@ -227,11 +225,11 @@ GradeDistribution = React.createClass({
         </Col>
         <Col sm={5} md={5} lg={5}>
           <ProductDropdown
-          onChange={this.props.onProductTypeChange}
-          gradeDistribution={this.props.gradeDistribution}
-          subject={this.props.subject}
-          grade={grade} 
-          group={group}
+            onChange={this.props.onProductTypeChange}
+            gradeDistribution={this.props.gradeDistribution}
+            subject={this.props.subject}
+            grade={grade} 
+            group={group}
          /></Col>
       </Row>
     )
@@ -270,8 +268,10 @@ GradeDistribution = React.createClass({
 
   
 
-var ProductDropdown = ({onChange, gradeDistribution, subject, grade, group}) => {
-  const options = {
+// var ProductDropdown = ({onChange, gradeDistribution, subject, grade, group}) => {
+var ProductDropdown = React.createClass({
+  render: function() {
+    const options = {
                   Math: [
                           "Instruction",
                           "Assessment",
@@ -300,19 +300,22 @@ var ProductDropdown = ({onChange, gradeDistribution, subject, grade, group}) => 
                           "Toolbox Access Booklet",
                           ]
                   }
-  const optionNodes = options[subject].map((option, index) =>{
-    return <option key={index} value={option}>{option}</option>
-  }) 
-  return(
-    <Input
-      onChange={onChange.bind(null, subject, grade, group)}
-      type="select"
-      label="Product Type"
-    >
-      {optionNodes}
-    </Input>
-  )
-}
+    const optionNodes = options[this.props.subject].map((option, index) =>{
+      return <option key={index} value={option}>{option}</option>
+    }) 
+    return(
+      <Input
+        onChange={this.props.onChange.bind(null, this.props.subject, this.props.grade, this.props.group)}
+        type="select"
+        label="Product Type"
+      >
+        {optionNodes}
+      </Input>
+    )
+  }
+
+})
+  
 
 
 module.exports = ReadyModal

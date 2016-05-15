@@ -41,8 +41,7 @@ var Distributions = React.createClass({
     });
   },
 
-  componentDidMount: function() {
-    console.log("oh hi there, from the componentDidMount")
+  componentDidMount: function() { 
     this.loadDistributionsFromServer();
     // setInterval(this.loadCommentsFromServer, this.props.pollInterval);
   },
@@ -144,16 +143,15 @@ var Distributions = React.createClass({
         });
       }.bind(this)
     })
-    console.log(distro_index, ready_index, field, edit)
   },
 
-  handleIReadyFieldEdit:function(distro_index, iready_index, field, edit) {
+  handleIReadyFieldEdit:function(distro_index, i_ready_index, field, edit) {
     // TODO: fill in edit details
-    oldValue = this.state.distributions[distro_index].i_ready_users[iready_index][field]
-    id       = this.state.distributions[distro_index].distribution.id
+    oldValue = this.state.distributions[distro_index].i_ready_users[i_ready_index][field]
+    id       = this.state.distributions[distro_index].i_ready_users[i_ready_index].id
     
     newState = update(this.state, 
-      {distributions: {[distro_index]: {i_ready_users: {[iready_index]: {[field]: {$set: edit}}}},
+      {distributions: {[distro_index]: {i_ready_users: {[i_ready_index]: {[field]: {$set: edit}}}},
     }})
     this.setState(newState)
     change = {
@@ -169,23 +167,21 @@ var Distributions = React.createClass({
       success: function (data) {
         // this.props.handleNewDistribution(data)
         this.handleNewAlert({
-          message:"Distribution successfully edited",
+          message:"IReady user successfully edited",
           style:"success"
         });
-        console.log("success")
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString())
         newState = update(this.state, {distributions: 
-          {[distro_index]: {[iready_index]: {[field]: {$set: oldValue}}},
+          {[distro_index]: {[i_ready_index]: {[field]: {$set: oldValue}}},
         }})
         this.handleNewAlert({
-          message:"Distribution failed to edit",
+          message:"IReady user failed to edit",
           style:"warning"
         });
       }.bind(this)
     })
-    console.log(distro_index, iready_index, field, edit)
   },
 
   handleToggleDetail: function(index) {

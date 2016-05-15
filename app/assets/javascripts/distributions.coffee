@@ -4,24 +4,18 @@
 
 ready = ->
   $ ->
-    ReactDOM = require('react-dom');
-    React  = require('react');
-    Distributions = require('./components/Distributions')
-    
-    console.log "in distribution"
     showUserDistributions = document.getElementById('distributions')
-    
     if (showUserDistributions)
+      ReactDOM = require('react-dom');
+      React  = require('react');
+      Distributions = require('./components/Distributions')
       ReactDOM.render(
         <Distributions
           url="/distributions"
           authenticity_token={$('meta[name=csrf-token]').attr('content')}/>,
         showUserDistributions
       )
-      
-    
-
-  
+     
 $(document).ready(ready)
 $(document).on('page:load', ready)
 
