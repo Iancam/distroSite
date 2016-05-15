@@ -102,12 +102,12 @@ var Distributions = React.createClass({
     const oldValue = this.state.distributions[distro_index].ready_users[ready_index][field]
     const id = this.state.distributions[distro_index].ready_users[ready_index].id
 
-    newState = update(this.state, 
+    const newState = update(this.state, 
       {distributions: {[distro_index]: {ready_users: {[ready_index]: {[field]: {$set: edit}}}}},
     })
     this.setState(newState)
 
-    change = {
+    const change = {
       field:field,
       value:edit,
       id:id,
@@ -147,14 +147,17 @@ var Distributions = React.createClass({
 
   handleIReadyFieldEdit:function(distro_index, i_ready_index, field, edit) {
     // TODO: fill in edit details
-    oldValue = this.state.distributions[distro_index].i_ready_users[i_ready_index][field]
-    id       = this.state.distributions[distro_index].i_ready_users[i_ready_index].id
-    
-    newState = update(this.state, 
+    const oldValue = this.state.distributions[distro_index].i_ready_users[i_ready_index][field]
+    const id       = this.state.distributions[distro_index].i_ready_users[i_ready_index].id
+    const newState = update(this.state, 
       {distributions: {[distro_index]: {i_ready_users: {[i_ready_index]: {[field]: {$set: edit}}}},
     }})
-    this.setState(newState)
-    change = {
+    this.setState(newState, ()=>{
+        if (field === "subject"){
+          this.handleIReadyFieldEdit(distro_index, i_ready_index, "toolbox", 'none')
+      }
+    })
+    const change = {
       field:field,
       value:edit,
       id:id,

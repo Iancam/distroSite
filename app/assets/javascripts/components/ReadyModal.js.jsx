@@ -131,8 +131,10 @@ var ReadyForm = React.createClass({
 
   handleProductTypeChange(subject, grade, group, event){
     const selection = "grade_"+grade+"_"+group
+    console.log(subject,grade, group, event)
     newState = update(this.state,
       {[subject]: {[selection]: {"product": {$set: event.target.value}}}})
+    console.log(newState)
     this.setState(newState)
   },
 

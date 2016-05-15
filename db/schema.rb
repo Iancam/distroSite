@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160511003828) do
+ActiveRecord::Schema.define(version: 20160515203453) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,7 +41,7 @@ ActiveRecord::Schema.define(version: 20160511003828) do
 
   create_table "i_ready_orders", force: :cascade do |t|
     t.string   "subject"
-    t.boolean  "toolbox"
+    t.string   "toolbox"
     t.integer  "enrollment"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false

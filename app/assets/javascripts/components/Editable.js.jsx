@@ -47,6 +47,7 @@ var Editable = React.createClass({
   
   render: function(){ 
     var prefix = (<Button
+                    key={0}
                     bsSize="small"
                     disabled={!this.props.canConfirm(this.state.editValue)}
                     onClick={this.handleConfirmEdit}>
@@ -100,17 +101,20 @@ var Editable = React.createClass({
                 {this.props.children}
                 </Input>
     } else if (this.props.type === "boolean") {
-      input = <Input
+      input=[
+              prefix,
+              <Input
+                key={1}
                 className="editInput"
                 bsSize="small"
                 name={this.props.name}
-                buttonBefore={prefix}
-                buttonAfter={postfix}
                 type="checkbox"
                 value={this.state.editValue}
                 onChange={this.handleEditChangeEvent}
                 placeholder={this.props.value}
-                />
+                />,
+                postfix
+            ]
     }
     var valueStyle={}
     var editStyle={display: 'none'}

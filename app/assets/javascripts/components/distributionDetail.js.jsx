@@ -1,13 +1,15 @@
-var React = require("react");
-var ReactBootstrap = require("react-bootstrap");
-var Editable = require("./Editable")
-var _ = require("lodash")
-var update = require('react-addons-update');
-var Table = ReactBootstrap.Table;
-var Button = ReactBootstrap.Button;
+const React = require("react");
+const ReactBootstrap = require("react-bootstrap");
+const Editable = require("./Editable")
+const ToolboxOptionNodes = require("./ToolboxOptionNodes")
+const _ = require("lodash")
+
+const update = require('react-addons-update');
+const Table = ReactBootstrap.Table;
+const Button = ReactBootstrap.Button;
 
 
-var DistributionDetail = React.createClass({
+const DistributionDetail = React.createClass({
   render: function () {
     if (this.props.show_detail) {
       return (
@@ -55,7 +57,6 @@ var ReadyUsers = React.createClass({
   render: function () {
     var ReadyUsers = []
     for (var i = 0; i < this.props.data.length; i++) {
-      console.log(this.props.data)
       var ready = this.props.data[i]
       ReadyUsers.push(
               <ReadyUser
@@ -131,10 +132,8 @@ var IReadyUsers = React.createClass({
             <th>School</th>
             <th>Contact</th>
             <th>Subject</th>
+            <th>Toolbox</th>
             <th>Enrollment</th>
-            <th>Enrollment tier</th>
-            <th>iready item number/sku</th>
-            <th>toolbox item #</th>
           </tr>
         </thead>
         <tbody>
@@ -161,7 +160,6 @@ var ReadyUser = React.createClass({
     var subjectOptions = ["","math","reading","writing"].map((subject, index)=>{
       return <option key={index} value={subject}>{subject}</option>
     })
-    console.log (this.props.schools)
     return(
         //school
         <tr>
@@ -212,11 +210,13 @@ var ReadyUser = React.createClass({
 
 var IReadyUser = React.createClass({
   render: function () {
-    var schoolOptions = schoolOptionsFrom(this.props.schools)
-    var subjectOptions = ["","math","reading"].map((subject, index)=>{
+    var schoolOptionNodes = schoolOptionsFrom(this.props.schools)
+    const subjects = ["","math","reading","math & reading"]
+    var subjectOptionNodes = subjects.map((subject, index)=>{
       return <option key={index} value={subject}>{subject}</option>
     })
-
+    console.log(this.props.data.toolbox)
+    
     return( 
         //school
         <tr>
@@ -228,7 +228,7 @@ var IReadyUser = React.createClass({
                                                     this.props.index,
                                                     "school_id")}
             >
-            {schoolOptions}
+            {schoolOptionNodes}
           </Editable>
           </td>
 
@@ -250,7 +250,7 @@ var IReadyUser = React.createClass({
                                                     this.props.index,
                                                     "subject")} 
           >
-          {subjectOptions}
+          {subjectOptionNodes}
           </Editable></td>
 
           {/* "toolbox"*/}
@@ -261,8 +261,9 @@ var IReadyUser = React.createClass({
                                                     this.props.distribution_index,
                                                     this.props.index,
                                                     "toolbox")} 
-          /></td>
-
+          >
+          {ToolboxOptionNodes(this.props.data.subject)}
+          </Editable></td>
           {/* "enrollment"*/}
           <td><Editable
             type="number"
@@ -272,7 +273,6 @@ var IReadyUser = React.createClass({
                                                     this.props.index,
                                                     "enrollment")} 
           /></td>
-
         </tr>
         )
   }

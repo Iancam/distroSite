@@ -1,11 +1,11 @@
-var React = require("react");
-var ReactBootstrap = require("react-bootstrap");
-var Input = ReactBootstrap.Input;
-var Button= ReactBootstrap.Button;
-var Modal = ReactBootstrap.Modal;
+const React = require("react");
+const ReactBootstrap = require("react-bootstrap");
+const ToolboxOptionNodes = require("./ToolboxOptionNodes")
+const Input = ReactBootstrap.Input;
+const Button= ReactBootstrap.Button;
+const Modal = ReactBootstrap.Modal;
 
-
-var IReadyModal = React.createClass({
+const IReadyModal = React.createClass({
   getInitialState: function() {
     return {showModal:false, IReady: {}}
   },
@@ -58,17 +58,15 @@ var IReadyForm = React.createClass({
       school:"",
       contact_name:"",
       subject:"",
-      toolbox: false,
+      toolbox: 'none',
       enrollment: this.props.schools[0][2]
     }
   },
   
-  handleToolboxYesChange: function(e){
-    this.setState({toolbox: true})
+  handleToolboxChange: function(e){
+    this.setState({toolbox: e.target.value})
   },
-  handleToolboxNoChange: function(e){
-    this.setState({toolbox:false})
-  },
+  
   handleSchoolChange: function(e){
     index = e.target.value
     schools = this.props.schools
@@ -104,7 +102,7 @@ var IReadyForm = React.createClass({
 
   },
   render: function () {
-    var schoolOptions = [<option key={0} value="">N/A</option>]
+    const schoolOptions = [<option key={0} value="">N/A</option>]
     schoolOptions.push(this.props.schools.map(function(school, index){
       return <option key={school} value={index}>{school[1]}</option>
     }))
@@ -134,19 +132,13 @@ var IReadyForm = React.createClass({
           <option value="reading">Reading</option>
           <option value="math & reading"> Math & Reading</option>
         </Input>
-        <h5>Toolbox For i-Ready</h5>
-        <Input 
-          label="Yes"
-          type="checkbox" 
-          onChange={this.handleToolboxYesChange}
-          checked={this.state.toolbox}
-          />
-        <Input 
-          label="No"
-          type="checkbox" 
-          onChange={this.handleToolboxNoChange}
-          checked={!this.state.toolbox}
-          />
+        <Input
+          type="select" 
+          onChange={this.handleToolboxChange}
+          label="Toolbox For i-Ready"
+          required>
+          {ToolboxOptionNodes(this.state.subject)}
+        </Input>
         <Input
           type="number" 
           onChange={this.handleEnrollmentChange}
