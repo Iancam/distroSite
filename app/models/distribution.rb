@@ -20,6 +20,7 @@ class Distribution < ActiveRecord::Base
     schools = School.where(district_id: self.district_id).collect { |e| [e.pid, e.name, e.enrollment] }
     d_with_district = self.attributes
     d_with_district["district"] = District.where(pid: self.district_id)[0]
+    d_with_district["creation_date"] = d_with_district["creation_date"].strftime("%F")
     district_options = []
     if d_with_district["district"]
       state = d_with_district["district"]["state"]
@@ -43,32 +44,49 @@ class Distribution < ActiveRecord::Base
     }
   end
 
+  def self.displayColumns
+    [
+      "contact_name",
+      "creation_date",
+      "final_quote_id",
+      "po_number",
+      "street",
+      "city",
+      "state",
+      "zip"
+    ]
+  end
+
   def to_csv
     dist_csv_string = CSV.generate do |csv|
+      csv << [""]
+      csv << ["", "Distribution Template"]
       #do the distribution header
-      Distribution.column_names.each do |c|
-        csv << ['',c, self.attributes[c]]
+      Distribution.displayColumns.each do |c|
+        attribute = self.attributes[c]
+        if c == "creation_date"
+          attribute = attribute.strftime("%F")
+        end
+        csv << ['',c.titleize, attribute]
       end
+      csv << [""]
+      csv << ["", "Ready Users"]
       #do ready orders
       # column names for orders, school and ReadyOrders
-      csv << [""]+ReadyOrder.column_names + School.column_names     
-      puts self.attributes
-      puts self.ready_orders
+      csv << [""]+ReadyOrder.displayColumns.map { |e| e.titleize } 
       ready_orders = ReadyOrder.where(distribution_id: self.id).to_a
-
       ready_orders.each do |ready|
-        puts "school_id #{ready.school_id}"
-        puts ready.attributes
-        schoolFields = School.find_by(pid: ready.school_id).attributes
-        csv << [""]+ready.to_array
+        csv << [""]+ready.displayArray
       end
+
       csv << [""]
       csv << [""]
+      csv << ["", "I-Ready Users"]
       # header row including order, school and iready column names
-      csv << [""]+IReadyOrder.column_names + School.column_names
+      csv << [""]+IReadyOrder.displayColumns.map { |e| e.titleize }
       i_ready_orders = IReadyOrder.where(distribution_id: self.id).to_a
       i_ready_orders.each do |iready|
-        csv << [""]+iready.to_array
+        csv << [""]+iready.displayArray
       end
     end
     return dist_csv_string    

@@ -6,20 +6,22 @@ class IReadyOrder < ActiveRecord::Base
 
   accepts_nested_attributes_for :school
   
-  def displayColumns
-  [ 
-    "subject",
-    "enrollment",
-    "contact_name",
-    "toolbox",
-    "name",
-    "enrollment",
-    "street",
-    "city",
-    "state",
-    "zip"
-    
-  ]
+  def self.displayColumns
+    [ 
+      "school_pid",
+      "subject",
+      "total_enrollment",
+      "contact_name",
+      "toolbox",
+      "tier",
+      "SKU",
+      "name",
+      "enrollment",
+      "street",
+      "city",
+      "state",
+      "zip" 
+    ]
   end
 
   def tier
@@ -43,31 +45,36 @@ class IReadyOrder < ActiveRecord::Base
     end
   end
 
-  def SKU   
-    IreadyProducts.find_by(subject: self.subject, tier: self.tier).pluck(:reo_id)
+  def SKU
+    puts self.tier
+    puts IreadyProduct.where(subject: self.subject)
+    IreadyProduct.find_by(subject: self.subject.capitalize, tier: self.tier).reo_id
   end
 
   def attributes_with_school
+    #TODO: replace this with including
     school = School.find_by(pid: self.school_id)
     user = self.attributes
     user["school"] = school
     user
   end
 
-  def to_array
+  def displayArray
+    
     attributes = self.attributes
     if !self.id 
       return nil
     end
     attributes["total_enrollment"] = attributes["enrollment"]
     attributes.delete("enrollment")
-    school_attributes = School.find_by(pid: self.school_id).attributes()
-    school_attributes["mdr_enrollment"] = school_attributes["enrollment"]
-
-    attributes.merge(school_attributes)
     attributes['tier'] = self.tier
     attributes['SKU'] = self.SKU
 
-    attributes.values_at(*displayColumns)
+    school_attributes = School.find_by(pid: self.school_id).attributes
+    school_attributes["mdr_enrollment"] = school_attributes["enrollment"]
+    attributes.merge!(school_attributes)
+    attributes["school_pid"] = school_attributes['pid']
+
+    attributes.values_at(*IReadyOrder.displayColumns)
   end
 end

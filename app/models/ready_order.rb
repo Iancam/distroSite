@@ -7,49 +7,62 @@ class ReadyOrder < ActiveRecord::Base
 
   accepts_nested_attributes_for :school
 
-  def displayColumns
-    columns = ["id",
+  def self.displayColumns
+    [
+      "school_pid",
+      "name",
+      "contact_name",
       "subject",
-      "grade_k_teacher",
-      "grade_1_teacher",
-      "grade_2_teacher",
-      "grade_3_teacher",
-      "grade_4_teacher",
-      "grade_5_teacher",
-      "grade_6_teacher",
-      "grade_7_teacher",
-      "grade_8_teacher",
-      "gr_k_teacher_product",
-      "gr_1_teacher_product",
-      "gr_2_teacher_product",
-      "gr_3_teacher_product",
-      "gr_4_teacher_product",
-      "gr_5_teacher_product",
-      "gr_6_teacher_product",
-      "gr_7_teacher_product",
-      "gr_8_teacher_product",
-      "grade_k_student",
-      "grade_1_student",
-      "grade_2_student",
-      "grade_3_student",
-      "grade_4_student",
-      "grade_5_student",
-      "grade_6_student",
-      "grade_7_student",
-      "grade_8_student",
-      "gr_k_student_product",
-      "gr_1_student_product",
-      "gr_2_student_product",
-      "gr_3_student_product",
-      "gr_4_student_product",
-      "gr_5_student_product",
-      "gr_6_student_product",
-      "gr_7_student_product",
-      "gr_8_student_product",
-      "created_at",
-      "updated_at",
       "toolbox",
-      "contact_name"
+      "street",
+      "city",
+      "state",
+      "zip",
+      "gr_k_student_product",
+      "grade_k_student",
+      "gr_1_student_product",
+      "grade_1_student",
+      "gr_2_student_product",
+      "grade_2_student",
+      "gr_3_student_product",
+      "grade_3_student",
+      "gr_4_student_product",
+      "grade_4_student",
+      "gr_5_student_product",
+      "grade_5_student",
+      "gr_6_student_product",
+      "grade_6_student",
+      "gr_7_student_product",
+      "grade_7_student",
+      "gr_8_student_product",
+      "grade_8_student",
+      "gr_k_teacher_product",
+      "grade_k_teacher",
+      "gr_1_teacher_product",
+      "grade_1_teacher",
+      "gr_2_teacher_product",
+      "grade_2_teacher",
+      "gr_3_teacher_product",
+      "grade_3_teacher",
+      "gr_4_teacher_product",
+      "grade_4_teacher",
+      "gr_5_teacher_product",
+      "grade_5_teacher",
+      "gr_6_teacher_product",
+      "grade_6_teacher",
+      "gr_7_teacher_product",
+      "grade_7_teacher",
+      "gr_8_teacher_product",
+      "grade_8_teacher",
+      
+      
+      
+      
+      
+      
+      
+      
+      
     ]
   end
 
@@ -71,7 +84,18 @@ class ReadyOrder < ActiveRecord::Base
     user
   end
 
+  def displayArray
+    attributes = self.attributes
+    if !self.id 
+      return nil
+    end
+    school_attributes = School.find_by(pid: self.school_id).attributes
+    attributes.merge!(school_attributes)
+    attributes["school_pid"] = school_attributes['pid']
+    attributes.values_at(*ReadyOrder.displayColumns)
+  end
+
   def to_array
-    self.attributes.values_at(*displayColumns)
+    self.attributes.values_at(*ReadyOrder.displayColumns)
   end
 end
