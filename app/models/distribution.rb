@@ -1,4 +1,4 @@
-class Distribution < ActiveRecord::Base
+  class Distribution < ActiveRecord::Base
   attr_accessible :street, :city, :state, 
           :contact_name, :creation_date, 
           :final_quote_id, :po_number, 
@@ -20,7 +20,7 @@ class Distribution < ActiveRecord::Base
     schools = School.where(district_id: self.district_id).collect { |e| [e.pid, e.name, e.enrollment] }
     d_with_district = self.attributes
     d_with_district["district"] = District.where(pid: self.district_id)[0]
-    d_with_district["creation_date"] = d_with_district["creation_date"].strftime("%F")
+    d_with_district["creation_date"] = d_with_district["creation_date"]? d_with_district["creation_date"].strftime("%F"): nil
     district_options = []
     if d_with_district["district"]
       state = d_with_district["district"]["state"]

@@ -63,7 +63,7 @@ var Distributions = React.createClass({
     oldValue = this.state.distributions[index].distribution[field]
     id       = this.state.distributions[index].distribution.id
 
-    newState = update(this.state, 
+    const newState = update(this.state, 
       {distributions: {[index]: {distribution: {[field]: {$set: edit}}},
     }})
     this.setState(newState)
@@ -87,7 +87,7 @@ var Distributions = React.createClass({
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString())
-        newState = update(this.state, 
+        const newState = update(this.state, 
           {distributions: {[index]: {[field]: {$set: oldValue}},
         }})
         this.handleNewAlert({
@@ -120,7 +120,7 @@ var Distributions = React.createClass({
       data: change,
       success: function (data) {
         if (field == "school_id") { 
-          newState = update(this.state, 
+          const newState = update(this.state, 
             {distributions: {[distro_index]: {ready_users: {[ready_index]: {$set: data["ready"]}}}}})
           this.setState(newState)
         }
@@ -133,7 +133,7 @@ var Distributions = React.createClass({
       }.bind(this),
       error: function(xhr, status, err) {
         console.error(this.props.url, status, err.toString())
-        newState = update(this.state, {
+        const newState = update(this.state, {
           distributions: {[distro_index]: {ready_users: {[ready_index]: {[field]: {$set: oldValue}}}}
         }})
         this.setState(newState)

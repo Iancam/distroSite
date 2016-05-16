@@ -10,7 +10,7 @@ class DistributionsController < ApplicationController
       distribution.district_id = district_id[0]
       if distribution.save
         format.html{redirect_to '/distributions/index', notice: 'successfully created distribution'}
-  		  format.json{render json: getDistributionInfo(distribution)}
+  		  format.json{render json: distribution.distribution_info}
       else
         format.html{redirect_to '/distributions/index', notice: 'failed to create a distribution'}
         format.json{render :json => { :errors => distribution.errors.full_messages }, :status => 422}
