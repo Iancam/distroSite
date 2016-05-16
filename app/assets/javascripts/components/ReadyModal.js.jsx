@@ -131,11 +131,11 @@ var ReadyForm = React.createClass({
 
   handleProductTypeChange(subject, grade, group, event){
     const selection = "grade_"+grade+"_"+group
-    console.log(subject,grade, group, event)
     newState = update(this.state,
       {[subject]: {[selection]: {"product": {$set: event.target.value}}}})
-    console.log(newState)
+
     this.setState(newState)
+
   },
 
   
@@ -213,37 +213,36 @@ GradeDistribution = React.createClass({
   handleToolboxChange(e){
     this.props.onToolboxChange(e.target.value)
   },
-
-  getGradeNode: function(grade, index, group){
-
-    return (
-      <Row key={index}>
-        <Col sm={5} md={5} lg={5}>
-          <Input
-          value={this.props.gradeDistribution["grade_"+grade+"_"+group]["number"]}
-          type="number"
-          onChange={this.props.onUnitsChange.bind(null, grade, group)}
-          label={"GR."+grade+" Units"} />
-        </Col>
-        <Col sm={5} md={5} lg={5}>
-          <ProductDropdown
-            onChange={this.props.onProductTypeChange}
-            gradeDistribution={this.props.gradeDistribution}
-            subject={this.props.subject}
-            grade={grade} 
-            group={group}
-         /></Col>
-      </Row>
-    )
+  handleStudentProductTypeChange(subject, grade, group, event){
+    this.props.onProductTypeChange(subject, grade, group, event);
+    this.props.onProductTypeChange(subject, grade, "teacher", event);
+    ;
   },
-
   render: function(){
     //group is either teacher or student
     var students = this.props.grades.map( function(grade,index){
-      return this.getGradeNode(grade, index, "student")
+      return <GradeNode
+                key={index}
+                grade={grade}
+                index={index}
+                group="student"
+                subject={this.props.subject}
+                onUnitsChange={this.props.onUnitsChange}
+                onProductTypeChange={this.handleStudentProductTypeChange}
+                gradeDistribution={this.props.gradeDistribution}
+                />
     }.bind(this))
     var teachers = this.props.grades.map(function(grade, index){
-      return this.getGradeNode(grade, index, "teacher")
+      return <GradeNode
+                key={index}
+                grade={grade}
+                index={index}
+                group="teacher"
+                subject={this.props.subject}
+                onUnitsChange={this.props.onUnitsChange}
+                onProductTypeChange={this.props.onProductTypeChange}
+                gradeDistribution={this.props.gradeDistribution}                
+                />
     }.bind(this))
     return( 
       <div className="GradeDistribution form-group">
@@ -268,55 +267,72 @@ GradeDistribution = React.createClass({
   }
 })
 
-  
+const GradeNode = ({
+  grade,
+  index,
+  group,
+  subject,
+  onUnitsChange,
+  onProductTypeChange,
+  gradeDistribution}) => {
+  return (
+    <Row key={index}>
+      <Col sm={5} md={5} lg={5}>
+        <Input
+        value={gradeDistribution["grade_"+grade+"_"+group]["number"]}
+        type="number"
+        onChange={onUnitsChange.bind(null, grade, group)}
+        label={"GR."+grade+" Units"} />
+      </Col>
+      <Col sm={5} md={5} lg={5}>
+        <ProductDropdown
+          onChange={onProductTypeChange}
+          gradeDistribution={gradeDistribution}
+          subject={subject}
+          grade={grade} 
+          group={group}
+       /></Col>
+    </Row>
+  )
+}
 
-// var ProductDropdown = ({onChange, gradeDistribution, subject, grade, group}) => {
-var ProductDropdown = React.createClass({
-  render: function() {
-    const options = {
-                  Math: [
-                          "Instruction",
-                          "Assessment",
-                          "Practice and Problem Solving",
-                          "Instruction + Assessment",
-                          "Instruction + Practice",
-                          "Instruction + Practice + Assessment",
-                          "Toolbox Access Booklet",
-                          ],
-                  Reading: [
-                          "Instruction",
-                          "Assessment",
-                          "Practice and Problem Solving",
-                          "Instruction + Assessment",
-                          "Instruction + Practice",
-                          "Instruction + Practice + Assessment",
-                          "Toolbox Access Booklet",
-                          ],
-                  Writing: [
-                          "Instruction",
-                          "Assessment",
-                          "Practice and Problem Solving",
-                          "Instruction + Assessment",
-                          "Instruction + Practice",
-                          "Instruction + Practice + Assessment",
-                          "Toolbox Access Booklet",
-                          ]
-                  }
-    const optionNodes = options[this.props.subject].map((option, index) =>{
-      return <option key={index} value={option}>{option}</option>
-    }) 
-    return(
-      <Input
-        onChange={this.props.onChange.bind(null, this.props.subject, this.props.grade, this.props.group)}
-        type="select"
-        label="Product Type"
-      >
-        {optionNodes}
-      </Input>
-    )
-  }
+const ProductDropdown = ({onChange, gradeDistribution, subject, grade, group}) => {
+  const options = {
+                Math: [
+                        "Instruction",
+                        "Assessment",
+                        "Practice and Problem Solving",
+                        "Instruction + Assessment",
+                        "Instruction + Practice",
+                        "Instruction + Practice + Assessment",
+                        "Toolbox Access Booklet"
+                        ],
+                Reading: [
+                        "Instruction",
+                        "Assessment",
+                        "Instruction + Assessment",
+                        "Toolbox Access Booklet"
+                        ],
+                Writing: [
+                        "Instruction"
+                        ]
+                }
+  const optionNodes = options[subject].map((option, index) =>{
+    return <option key={index} value={option}>{option}</option>
+  }) 
+  const selection = "grade_"+grade+"_"+group
 
-})
+  return(
+    <Input
+      onChange={onChange.bind(null, subject, grade, group)}
+      type="select"
+      value={gradeDistribution[selection]['product']}
+      label="Product Type"
+    >
+      {optionNodes}
+    </Input>
+  )
+}
   
 
 
