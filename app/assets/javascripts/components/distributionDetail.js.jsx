@@ -92,21 +92,23 @@ var ReadyUsers = React.createClass({
     } 
     // s
     return (
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>School</th>
-            <th>Contact</th>
-            <th>Subject</th>
-            <th>Student Units</th>
-            <th>Teacher Units</th>
-          </tr>
-        </thead>
-        <tbody>
-          {ReadyUsers}
-        </tbody>
-      </Table>
-
+      <div>
+        <h3>Ready Users</h3>
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>School</th>
+              <th>Contact</th>
+              <th>Subject</th>
+              <th>Student Units</th>
+              <th>Teacher Units</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ReadyUsers}
+          </tbody>
+        </Table>
+      </div>
       )
   }
 })
@@ -126,20 +128,23 @@ var IReadyUsers = React.createClass({
     })
 
     return (
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>School</th>
-            <th>Contact</th>
-            <th>Subject</th>
-            <th>Toolbox</th>
-            <th>Enrollment</th>
-          </tr>
-        </thead>
-        <tbody>
-          {IReadyUsers}
-        </tbody>
-      </Table>
+      <div>
+        <h3>I-Ready Users</h3>
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>School</th>
+              <th>Contact</th>
+              <th>Subject</th>
+              <th>Toolbox</th>
+              <th>Enrollment</th>
+            </tr>
+          </thead>
+          <tbody>
+            {IReadyUsers}
+          </tbody>
+        </Table>
+      </div>
       )
   }
 })
@@ -281,11 +286,11 @@ var IReadyUser = React.createClass({
 var Units = React.createClass({
   render: function(){
     var grades = ['k',1,2,3,4,5,6,7,8]
-          var type = this.props.type
+    var group = this.props.type
 
     gradeNodes = grades.map(function(grade, index){
 
-      var gradeName = "grade_"+grade+"_"+this.props.type
+      var gradeName = "grade_"+grade+"_"+group
       return (
         <td
         key={index}>
@@ -297,6 +302,7 @@ var Units = React.createClass({
                                                         this.props.index,
                                                         gradeName)}
           />
+
         </td>
       )
     }.bind(this))
@@ -307,7 +313,7 @@ var Units = React.createClass({
       return(
         <tr >
           <td colSpan="8">
-          <h4>{type.charAt(0).toUpperCase() + type.slice(1)}</h4>
+          <h4>{group.charAt(0).toUpperCase() + group.slice(1)}</h4>
           <Table>
             <thead>
               <tr>

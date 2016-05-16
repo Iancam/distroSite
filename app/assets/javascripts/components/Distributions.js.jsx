@@ -201,15 +201,14 @@ var Distributions = React.createClass({
     newState = update(this.state, {distributions: {$push: [d]}})
     this.setState(newState)
   },
-  addIReady: function(IReady, index){
-    console.log(IReady, index)
+  addIReady: function(i_ready, index){
     newState= update(this.state,
-    {distributions: {[index]:{i_ready_users: {$push: [IReady]}}}})
+    {distributions: {[index]:{i_ready_users: {$push: [i_ready]}}}})
     this.setState(newState)
   },
-  addReady: function(Ready,index){
+  addReady: function(ready,index){
     newState= update(this.state,
-    {distributions: {[index]:{ready_users: {$push: [Ready]}}}})
+    {distributions: {[index]:{ready_users: {$push: [ready]}}}})
     this.setState(newState)
   },
   addReadies: function(readies, index){
