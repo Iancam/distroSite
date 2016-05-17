@@ -12,10 +12,10 @@ class EndUsersController < ApplicationController
       newReady["toolbox"] = params[subject]['toolbox']
 
       ['k',1,2,3,4,5,6,7,8].each { |n|
-        newReady["gr_#{n}_teacher_product"] = params[subject]["grade_#{n}_teacher"]["product"]
-        newReady["gr_#{n}_student_product"] = params[subject]["grade_#{n}_student"]["product"]
-        newReady["grade_#{n}_teacher"] = params[subject]["grade_#{n}_teacher"]["number"]
-        newReady["grade_#{n}_student"] = params[subject]["grade_#{n}_student"]["number"]
+        newReady["gr_#{n}_teacher_product"] = params[subject]["gr_#{n}_teacher_product"]
+        newReady["gr_#{n}_student_product"] = params[subject]["gr_#{n}_student_product"]
+        newReady["grade_#{n}_teacher"] = params[subject]["grade_#{n}_teacher"]
+        newReady["grade_#{n}_student"] = params[subject]["grade_#{n}_student"]
       }
       if !newReady.save()
         saved = false

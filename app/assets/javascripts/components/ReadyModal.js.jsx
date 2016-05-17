@@ -2,6 +2,7 @@ var React = require("react");
 var ReactBootstrap = require("react-bootstrap");
 var _     = require("lodash")
 var update = require("react-addons-update")
+var ProductDropdown = require("./ProductDropdown")
 var Input = ReactBootstrap.Input;
 var Button= ReactBootstrap.Button;
 var Modal = ReactBootstrap.Modal;
@@ -80,8 +81,10 @@ var ReadyForm = React.createClass({
 
     for (subject of ["Math", "Reading", "Writing"]){
       for (grade of ['k',1,2,3,4,5,6,7,8]){
-        init[subject]['grade_'+grade+'_student'] = {number:0,product:'Instruction'} 
-        init[subject]['grade_'+grade+'_teacher'] = {number:0,product:'Instruction'} 
+        init[subject]['grade_'+grade+'_student'] = 0;
+        init[subject]['grade_'+grade+'_student_product']= "Instruction";
+        init[subject]['grade_'+grade+'_teacher'] = 0;
+        init[subject]['grade_'+grade+'_teacher_product']= "Instruction";
       }
     }
 
@@ -125,14 +128,14 @@ var ReadyForm = React.createClass({
   handleUnitsChange(subject, grade, group, units){
     selection = "grade_"+grade+"_"+group
     const newState = update(this.state,
-      {[subject]: {[selection]: {"number": {$set: units.target.value}}}})
+      {[subject]: {[selection]: {$set: units.target.value}}})
     this.setState(newState)
   },
 
   handleProductTypeChange(subject, grade, group, event){
-    const selection = "grade_"+grade+"_"+group
+    const selection = "grade_"+grade+"_"+group+"_product"
     newState = update(this.state,
-      {[subject]: {[selection]: {"product": {$set: event.target.value}}}})
+      {[subject]: {[selection]: {$set: event.target.value}}})
 
     this.setState(newState)
 
@@ -279,7 +282,7 @@ const GradeNode = ({
     <Row key={index}>
       <Col sm={5} md={5} lg={5}>
         <Input
-        value={gradeDistribution["grade_"+grade+"_"+group]["number"]}
+        value={gradeDistribution["grade_"+grade+"_"+group]}
         type="number"
         onChange={onUnitsChange.bind(null, grade, group)}
         label={"GR."+grade.toString().toUpperCase()+" Units"} />
@@ -296,41 +299,7 @@ const GradeNode = ({
   )
 }
 
-const ProductDropdown = ({onChange, gradeDistribution, subject, grade, group}) => {
-  const options = {
-                Math: [
-                        "Instruction",
-                        "Assessment",
-                        "Practice and Problem Solving",
-                        "Instruction + Assessment",
-                        "Instruction + Practice",
-                        "Instruction + Practice + Assessment"
-                        ],
-                Reading: [
-                        "Instruction",
-                        "Assessment",
-                        "Instruction + Assessment"
-                        ],
-                Writing: [
-                        "Instruction"
-                        ]
-                }
-  const optionNodes = options[subject].map((option, index) =>{
-    return <option key={index} value={option}>{option}</option>
-  }) 
-  const selection = "grade_"+grade+"_"+group
 
-  return(
-    <Input
-      onChange={onChange.bind(null, subject, grade, group)}
-      type="select"
-      value={gradeDistribution[selection]['product']}
-      label="Product Type"
-    >
-      {optionNodes}
-    </Input>
-  )
-}
   
 
 

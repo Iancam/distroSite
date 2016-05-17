@@ -2,6 +2,8 @@ const React = require("react");
 const ReactBootstrap = require("react-bootstrap");
 const Editable = require("./Editable")
 const ToolboxOptionNodes = require("./ToolboxOptionNodes")
+var ProductDropdown = require("./ProductDropdown")
+
 const _ = require("lodash")
 
 const update = require('react-addons-update');
@@ -71,7 +73,8 @@ var ReadyUsers = React.createClass({
                 toggleShowStudentUnits={this.toggleShowStudentUnits.bind(null, i)}
                 toggleShowTeacherUnits={this.toggleShowTeacherUnits.bind(null, i)}
               />)
-      ReadyUsers.push(<Units
+      ReadyUsers.push(
+        <Units
         show_detail={this.state.show_student_units[i]}
         type="student"
         key={i+.1}
@@ -80,7 +83,8 @@ var ReadyUsers = React.createClass({
         data={ready}
         onConfirmEdit={this.props.onConfirmEdit}
       />)
-      ReadyUsers.push(<Units
+      ReadyUsers.push(
+        <Units
         show_detail={this.state.show_teacher_units[i]}
         type='teacher' 
         key={i+.2}
@@ -290,17 +294,17 @@ var Units = React.createClass({
 
     gradeNodes = grades.map(function(grade, index){
 
-      var gradeName = "grade_"+grade+"_"+group
+      var selection = "grade_"+grade+"_"+group
       return (
         <td
         key={index}>
           <Editable 
-            value={this.props.data[gradeName]}
+            value={this.props.data[selection]}
             type="number"
             onConfirmEdit={this.props.onConfirmEdit.bind(null,
                                                         this.props.distribution_index,
                                                         this.props.index,
-                                                        gradeName)}
+                                                        selection)}
           />
 
         </td>
@@ -309,6 +313,48 @@ var Units = React.createClass({
     var headerNodes = grades.map(function(grade, index){
       return (<th key={index}>{"GR. "+grade.toString().toUpperCase()}</th>)
     })
+
+    var productNodes = grades.map((grade, index)=>{
+      const options = {
+                Math: [
+                        "Instruction",
+                        "Assessment",
+                        "Practice and Problem Solving",
+                        "Instruction + Assessment",
+                        "Instruction + Practice",
+                        "Instruction + Practice + Assessment"
+                        ],
+                Reading: [
+                        "Instruction",
+                        "Assessment",
+                        "Instruction + Assessment"
+                        ],
+                Writing: [
+                        "Instruction"
+                        ]
+                }
+      var subject = this.props.data.subject
+      const optionNodes = options[subject].map((option, o_index) =>{
+        return <option key={o_index} value={option}>{option}</option>
+      }) 
+      var selection = "gr_"+grade+"_"+group+"_product"
+      return(
+        <td key={index}><Editable
+          type="select"
+          value={this.props.data[selection]}
+          onConfirmEdit={this.props.onConfirmEdit.bind(null,
+                                                      this.props.distribution_index,
+                                                      this.props.index,
+                                                      selection)}
+        >
+          {optionNodes}
+        </Editable></td>
+      )
+
+    })
+    
+
+
     if (this.props.show_detail) {
       return(
         <tr >
@@ -323,6 +369,9 @@ var Units = React.createClass({
             <tbody>
               <tr>
                 {gradeNodes}
+              </tr>
+              <tr>
+                {productNodes}
               </tr>
             </tbody>
           </Table>
