@@ -48,7 +48,7 @@ class IReadyOrder < ActiveRecord::Base
   def SKU
     puts self.tier
     puts IreadyProduct.where(subject: self.subject)
-    IreadyProduct.find_by(subject: self.subject.capitalize, tier: self.tier).reo_id
+    IreadyProduct.find_by(subject: self.subject.titleize, tier: self.tier).reo_id
   end
 
   def attributes_with_school

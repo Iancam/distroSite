@@ -282,7 +282,7 @@ const GradeNode = ({
         value={gradeDistribution["grade_"+grade+"_"+group]["number"]}
         type="number"
         onChange={onUnitsChange.bind(null, grade, group)}
-        label={"GR."+grade+" Units"} />
+        label={"GR."+grade.toString().toUpperCase()+" Units"} />
       </Col>
       <Col sm={5} md={5} lg={5}>
         <ProductDropdown
@@ -304,14 +304,12 @@ const ProductDropdown = ({onChange, gradeDistribution, subject, grade, group}) =
                         "Practice and Problem Solving",
                         "Instruction + Assessment",
                         "Instruction + Practice",
-                        "Instruction + Practice + Assessment",
-                        "Toolbox Access Booklet"
+                        "Instruction + Practice + Assessment"
                         ],
                 Reading: [
                         "Instruction",
                         "Assessment",
-                        "Instruction + Assessment",
-                        "Toolbox Access Booklet"
+                        "Instruction + Assessment"
                         ],
                 Writing: [
                         "Instruction"

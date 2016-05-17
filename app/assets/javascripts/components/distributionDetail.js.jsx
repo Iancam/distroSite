@@ -161,7 +161,7 @@ function schoolOptionsFrom(schools){
 
 var ReadyUser = React.createClass({
   render: function () {
-    schoolOptions = schoolOptionsFrom(this.props.schools)
+    const schoolOptions = schoolOptionsFrom(this.props.schools)
     var subjectOptions = ["","math","reading","writing"].map((subject, index)=>{
       return <option key={index} value={subject}>{subject}</option>
     })
