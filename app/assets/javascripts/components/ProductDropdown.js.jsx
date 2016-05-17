@@ -1,4 +1,8 @@
-const ProductDropdown = ({onChange, gradeDistribution, subject, grade, group}) => {
+const React = require("react")
+const ReactBootstrap = require("react-bootstrap");
+const Input = ReactBootstrap.Input;
+
+const ProductDropdown = ({bsSize, onChange, gradeDistribution, subject, grade, group}) => {
   const options = {
                 Math: [
                         "Instruction",
@@ -24,6 +28,7 @@ const ProductDropdown = ({onChange, gradeDistribution, subject, grade, group}) =
 
   return(
     <Input
+      bsSize={bsSize}
       onChange={onChange.bind(null, subject, grade, group)}
       type="select"
       value={gradeDistribution[selection]}

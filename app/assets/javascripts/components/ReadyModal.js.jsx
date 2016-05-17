@@ -79,8 +79,8 @@ var ReadyForm = React.createClass({
       }
     }
 
-    for (subject of ["Math", "Reading", "Writing"]){
-      for (grade of ['k',1,2,3,4,5,6,7,8]){
+    for (const subject of ["Math", "Reading", "Writing"]){
+      for (const grade of ['k',1,2,3,4,5,6,7,8]){
         init[subject]['grade_'+grade+'_student'] = 0;
         init[subject]['grade_'+grade+'_student_product']= "Instruction";
         init[subject]['grade_'+grade+'_teacher'] = 0;
@@ -103,7 +103,7 @@ var ReadyForm = React.createClass({
 
   handleSubmit: function(e){
     e.preventDefault()
-    order = {
+    const order = {
           distribution_id:this.props.distribution,
           school:this.state.school,
           contact_name:this.state.contact_name,
@@ -115,9 +115,9 @@ var ReadyForm = React.createClass({
   },
 
   handleTabSelect(key) {
-    currentTab = this.state.tab_key
-    currentGrades = _.assign({}, this.state[currentTab])
-    hasBeenEdited = this.state[key].hasBeenEdited
+    const currentTab = this.state.tab_key
+    const currentGrades = _.assign({}, this.state[currentTab])
+    const hasBeenEdited = this.state[key].hasBeenEdited
     if (!hasBeenEdited) {
       this.setState({[key]:currentGrades})
     }
@@ -132,12 +132,12 @@ var ReadyForm = React.createClass({
     this.setState(newState)
   },
 
-  handleProductTypeChange(subject, grade, group, event){
+  handleProductTypeChange(subject, grade, group, event, callback){
     const selection = "grade_"+grade+"_"+group+"_product"
-    newState = update(this.state,
+    const newState = update(this.state,
       {[subject]: {[selection]: {$set: event.target.value}}})
 
-    this.setState(newState)
+    this.setState(newState, callback)
 
   },
 
@@ -156,6 +156,7 @@ var ReadyForm = React.createClass({
     }))
     return ( 
       <form 
+        bsSize="small"
         acceptCharset="UTF-8" 
         method="post" 
         onSubmit={ this.handleSubmit }>
@@ -217,9 +218,10 @@ GradeDistribution = React.createClass({
     this.props.onToolboxChange(e.target.value)
   },
   handleStudentProductTypeChange(subject, grade, group, event){
-    this.props.onProductTypeChange(subject, grade, group, event);
-    this.props.onProductTypeChange(subject, grade, "teacher", event);
-    ;
+    event.persist()
+    this.props.onProductTypeChange(subject, grade, group, event, ()=>{
+      this.props.onProductTypeChange(subject, grade, "teacher", event);  
+    });
   },
   render: function(){
     //group is either teacher or student
@@ -282,13 +284,15 @@ const GradeNode = ({
     <Row key={index}>
       <Col sm={5} md={5} lg={5}>
         <Input
+        bsSize="small"
         value={gradeDistribution["grade_"+grade+"_"+group]}
         type="number"
         onChange={onUnitsChange.bind(null, grade, group)}
         label={"GR."+grade.toString().toUpperCase()+" Units"} />
       </Col>
-      <Col sm={5} md={5} lg={5}>
+      <Col sm={6} md={6} lg={6}>
         <ProductDropdown
+          bsSize="small"
           onChange={onProductTypeChange}
           gradeDistribution={gradeDistribution}
           subject={subject}
